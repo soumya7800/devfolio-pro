@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Soumya Ranjan Padhi - Backend Engineer</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    // CRITICAL: Polyfill for process.env
+    window.process = window.process || {
+      env: {
+        NODE_ENV: 'development'
+      }
+    };
+
+    // Error handler to show white-screen errors
+    window.addEventListener('error', function (e) {
+      if (document.body) {
+        if (document.body.innerHTML.trim() === '') {
+          const errDiv = document.createElement('div');
+          errDiv.style.position = 'fixed';
+          errDiv.style.top = '0';
+          errDiv.style.left = '0';
+          errDiv.style.width = '100%';
+          errDiv.style.background = '#aa0000';
+          errDiv.style.color = 'white';
+          errDiv.style.padding = '20px';
+          errDiv.style.zIndex = '99999';
+          errDiv.style.fontFamily = 'monospace';
+          errDiv.textContent = 'Runtime Error: ' + e.message;
+          document.body.appendChild(errDiv);
+        }
+      }
+      console.error('Global Error:', e);
+    });
+
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            background: '#000000',
+            surfaceSecondary: '#0B0B0B',
+            surface: '#111111',
+            borderSubtle: '#1C1C1C',
+            primary: '#FFFFFF',
+            secondary: '#B3B3B3',
+            muted: '#6F6F6F',
+            accent: '#5B5CFF',
+            success: '#10b981',
+            warning: '#f59e0b',
+            error: '#ef4444',
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          animation: {
+            'fade-in': 'fadeIn 0.3s ease-out forwards',
+            'fade-in-up': 'fadeInUp 0.3s ease-out forwards',
+            'scanline-hz': 'scanlineHz 2s linear infinite',
+          },
+          keyframes: {
+            fadeIn: {
+              '0%': { opacity: '0' },
+              '100%': { opacity: '1' },
+            },
+            fadeInUp: {
+              '0%': { opacity: '0', transform: 'translateY(10px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            },
+            scanlineHz: {
+              '0%': { transform: 'translateX(-100%)' },
+              '100%': { transform: 'translateX(100%)' },
+            }
+          }
+        }
+      },
+      plugins: [
+        function ({ addUtilities }) {
+          addUtilities({
+            '.optimize-legibility': {
+              'text-rendering': 'optimizeLegibility',
+            },
+            '.subpixel-antialiased': {
+              '-webkit-font-smoothing': 'subpixel-antialiased',
+              '-moz-osx-font-smoothing': 'auto',
+            }
+          })
+        }
+      ]
+    }
+  </script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background-color: #000000;
+      color: #FFFFFF;
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+      /* Native OS Text Rendering */
+      -webkit-font-smoothing: subpixel-antialiased;
+      -moz-osx-font-smoothing: auto;
+      text-rendering: optimizeLegibility;
+      /* Prevent dark mode high-contrast flicker */
+      background-attachment: fixed;
+    }
+
+    /* Reveal on Scroll Animation (Refined true native feel) */
+    .reveal {
+      opacity: 0;
+      transform: translateY(4px);
+      transition: opacity 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+    .reveal.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Custom Scrollbar Minimal */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #0B0B0B;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #1C1C1C;
+      border-radius: 0px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #6F6F6F;
+    }
+
+    @keyframes continuousSilverGlow {
+      0% {
+        box-shadow:
+          inset 0 0 2px rgba(255, 255, 255, 0.2),
+          0 0 5px rgba(255, 255, 255, 0.1);
+      }
+
+      50% {
+        box-shadow:
+          inset 0 0 8px rgba(255, 255, 255, 0.6),
+          inset 0 0 2px rgba(255, 255, 255, 0.9),
+          0 0 15px rgba(255, 255, 255, 0.4);
+      }
+
+      100% {
+        box-shadow:
+          inset 0 0 2px rgba(255, 255, 255, 0.2),
+          0 0 5px rgba(255, 255, 255, 0.1);
+      }
+    }
+
+    /* Precision Edge Lighting */
+    .edge-light {
+      animation: continuousSilverGlow 2.5s infinite ease-in-out;
+    }
+
+    .group:hover .group-hover\:edge-light {
+      animation: continuousSilverGlow 2.5s infinite ease-in-out;
+    }
+
+    /* Background Grid Subtle */
+    .bg-grid {
+      background-size: 40px 40px;
+      background-image: linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    }
+
+    /* Minimal Loader */
+    .loader-container {
+      position: fixed;
+      inset: 0;
+      background: #0B0F19;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+
+    .simple-spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid rgba(255, 255, 255, 0.06);
+      border-top-color: #5B5FFF;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@18.2.0",
+    "react/": "https://esm.sh/react@18.2.0/",
+    "react-dom": "https://esm.sh/react-dom@18.2.0?deps=react@18.2.0",
+    "react-dom/client": "https://esm.sh/react-dom@18.2.0/client?deps=react@18.2.0",
+    "lucide-react": "https://esm.sh/lucide-react@0.292.0?deps=react@18.2.0",
+    "@google/genai": "https://esm.sh/@google/genai@0.1.1",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/"
+  }
+}
+</script>
+</head>
+
+<body>
+  <div id="root"></div>
+  <script type="module" src="./index.tsx"></script>
+  <script type="module" src="/index.tsx"></script>
+</body>
+
+</html>
