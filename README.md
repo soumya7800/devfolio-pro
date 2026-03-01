@@ -47,7 +47,6 @@ Ensure you have the following installed on your machine:
      ```env
      GEMINI_API_KEY=your_actual_api_key_here
      ```
-     > **Note:** You can get your API key from [Google AI Studio](https://aistudio.google.com/).
 
 ### Running the Application
 
