@@ -14,9 +14,9 @@ export const Stats: React.FC = () => {
       const stats = await fetchLeetCodeStats(leetCodeUsername);
 
       if (stats) {
-        setSolvedCount(stats.totalSolved.toString() + '+');
+        setSolvedCount(stats.totalSolved.toString());
       } else {
-        setSolvedCount('500+'); // Fallback
+        setSolvedCount('Error'); // Fallback
       }
       setIsLoading(false);
     };
@@ -60,11 +60,11 @@ export const Stats: React.FC = () => {
           <div className="grid grid-cols-2 gap-4">
             <StatCard
               label="YEARS_EXPERIENCE"
-              value="04+"
+              value="01+"
             />
             <StatCard
               label="PROJECTS_BUILT"
-              value="03+"
+              value="04+"
             />
             <StatCard
               label="DSA_SOLVED"

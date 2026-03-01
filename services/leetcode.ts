@@ -7,42 +7,69 @@ export interface LeetCodeStats {
 }
 
 export const fetchLeetCodeStats = async (username: string): Promise<LeetCodeStats | null> => {
+    // 1. Try Local Serverless Function first (Optimized for Vercel deployment)
     try {
-        // Try Primary API (alfa-leetcode-api)
-        // using the /solved endpoint which is more reliable
-        const response = await fetch(`https://alfa-leetcode-api.onrender.com/${username}/solved`);
+        const localResponse = await fetch(`/api/leetcode?username=${username}`);
+        if (localResponse.ok) {
+            const data = await localResponse.json();
+            if (data.status === 'success') {
+                return {
+                    totalSolved: data.totalSolved,
+                    easySolved: data.easySolved,
+                    mediumSolved: data.mediumSolved,
+                    hardSolved: data.hardSolved,
+                    ranking: 0
+                };
+            }
+        }
+    } catch (e) {
+        // Fall through to public proxies if local API isn't available (e.g. local dev)
+    }
+
+    // 2. Fallback: Array of Public LeetCode API endpoints
+    const endpoints = [
+        `https://alfa-leetcode-api.onrender.com/${username}/solved`,
+        `https://leetcode-api-faisalshohag.vercel.app/${username}`,
+        `https://leetcode-stats-api.herokuapp.com/${username}`
+    ];
+
+    const fetchEndpoint = async (url: string): Promise<LeetCodeStats> => {
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error(`Failed with status: ${response.status}`);
+        }
         const data = await response.json();
 
-        if (response.ok && data.solvedProblem !== undefined) {
+        // Check if data is from alfa-leetcode-api (/solved)
+        if (data.solvedProblem !== undefined) {
             return {
                 totalSolved: data.solvedProblem,
                 easySolved: data.easySolved,
                 mediumSolved: data.mediumSolved,
                 hardSolved: data.hardSolved,
-                ranking: 0 // Optional, not usually in the /solved endpoint
+                ranking: 0
             };
         }
-    } catch (error) {
-        console.warn('Primary (Alfa) LeetCode API failed, trying backup...', error);
-    }
 
-    // Backup API: leetcode-stats-api.herokuapp.com
-    try {
-        const backupResponse = await fetch(`https://leetcode-stats-api.herokuapp.com/${username}`);
-        const backupData = await backupResponse.json();
-
-        if (backupResponse.ok && backupData.status === 'success') {
+        // Check if data is from leetcode-stats-api or leetcode-api-faisalshohag
+        if (data.status === 'success' || data.totalSolved !== undefined) {
             return {
-                totalSolved: backupData.totalSolved,
-                easySolved: backupData.easySolved,
-                mediumSolved: backupData.mediumSolved,
-                hardSolved: backupData.hardSolved,
-                ranking: backupData.ranking
+                totalSolved: data.totalSolved,
+                easySolved: data.easySolved,
+                mediumSolved: data.mediumSolved,
+                hardSolved: data.hardSolved,
+                ranking: data.ranking || 0
             };
         }
-    } catch (e) {
-        console.error('All LeetCode APIs failed', e);
-    }
 
-    return null;
+        throw new Error('Invalid data format');
+    };
+
+    try {
+        // Use Promise.any to return the first successful promise
+        return await Promise.any(endpoints.map(fetchEndpoint));
+    } catch (error) {
+        console.error('All LeetCode APIs failed:', error);
+        return null;
+    }
 };
