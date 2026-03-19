@@ -1,126 +1,131 @@
-import React, { useEffect, useState } from 'react';
-import { PERSONAL_INFO, SOCIAL_LINKS } from '../constants';
-import { fetchLeetCodeStats } from '../services/leetcode';
-import { Loader2 } from 'lucide-react';
+import React from 'react';
+import { motion } from 'framer-motion';
+import { useLeetCodeStats } from '../hooks/useLeetCodeStats';
+
+const LEETCODE_URL = 'https://leetcode.com/u/soumyaranjanpadhi/';
+
+const STATIC_STATS = [
+  { value: '10+', label: 'Projects Built', sublabel: 'Full-stack & Backend', neon: '0 0 30px rgba(139,111,255,0.5)', color: '#8B6FFF', href: null },
+  { value: '2+',  label: 'Years Coding',   sublabel: 'Since 2022',           neon: '0 0 30px rgba(61,219,255,0.5)',  color: '#3DDBFF', href: null },
+  { value: '3',   label: 'Certifications', sublabel: 'Cloud · Java · AI',    neon: '0 0 30px rgba(139,111,255,0.5)', color: '#8B6FFF', href: null },
+];
+
+// Shared card styles
+const cardBase = "group relative glass rounded-2xl px-6 py-8 flex flex-col gap-2 overflow-hidden shimmer-card";
+const cardStyle = { border: '1px solid rgba(255,255,255,0.07)' };
+
+const TopAccentLine: React.FC<{ color: string; glow: string }> = ({ color, glow }) => (
+  <div className="absolute top-0 left-4 right-4 h-px opacity-0 group-hover:opacity-100 transition-opacity duration-400"
+    style={{ background: color, boxShadow: glow }} />
+);
+
+const InnerGlow: React.FC<{ color: string }> = ({ color }) => (
+  <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-400 pointer-events-none"
+    style={{ background: `radial-gradient(ellipse at top left, ${color} 0%, transparent 60%)` }} />
+);
 
 export const Stats: React.FC = () => {
-  const [solvedCount, setSolvedCount] = useState<string>('Loading...');
-  const [isLoading, setIsLoading] = useState(true);
+  const { stats, state } = useLeetCodeStats('soumyaranjanpadhi');
 
-  useEffect(() => {
-    const getStats = async () => {
-      setIsLoading(true);
-      const leetCodeUsername = SOCIAL_LINKS.find(link => link.label === 'LeetCode')?.username || 'soumyaranjanpadhi';
-      const stats = await fetchLeetCodeStats(leetCodeUsername);
+  // Determine displayed value for DSA card
+  const dsaValue = (state === 'done' || state === 'fresh') && stats
+    ? `${stats.solved}`
+    : state === 'fetching' || state === 'waking'
+      ? '···'
+      : '226'; // last known value as fallback
 
-      if (stats) {
-        setSolvedCount(stats.totalSolved.toString());
-      } else {
-        setSolvedCount('Error'); // Fallback
-      }
-      setIsLoading(false);
-    };
-
-    getStats();
-  }, []);
+  const dsaSublabel = (state === 'done' || state === 'fresh') && stats
+    ? `${stats.easy}E · ${stats.medium}M · ${stats.hard}H`
+    : 'LeetCode · Live';
 
   return (
-    <section className="py-24 bg-background relative overflow-hidden border-b border-borderSubtle">
-      {/* Decorative background grid */}
-      <div className="absolute inset-0 bg-grid opacity-10 pointer-events-none"></div>
+    <section className="py-16 relative overflow-hidden border-b border-borderSubtle">
+      <div className="absolute inset-0 hex-grid opacity-40 pointer-events-none" />
+      <div className="absolute inset-0" style={{ background: 'rgba(7,11,20,0.7)' }} />
 
-      <div className="max-w-7xl mx-auto px-6 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 items-center">
+      <div className="relative z-10 w-full">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
 
-          {/* Left Column: Short Bio */}
-          <div className="flex flex-col gap-6 group">
-            <div className="inline-flex items-center gap-2 px-3 py-1 border border-borderSubtle bg-surface/50 w-fit">
-              <span className="w-1.5 h-1.5 bg-accent rounded-full animate-pulse"></span>
-              <span className="font-mono text-[10px] font-bold tracking-widest uppercase text-secondary">
-                OS_INFO_PANEL
-              </span>
+          {/* ── DSA card — live from LeetCode ── */}
+          <motion.a
+            href={LEETCODE_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+            whileHover={{ y: -5, transition: { duration: 0.2 } }}
+            className={`${cardBase} cursor-pointer`}
+            style={cardStyle}
+          >
+            <TopAccentLine color="#3DDBFF" glow="0 0 8px rgba(61,219,255,0.8)" />
+            <InnerGlow color="rgba(61,219,255,0.05)" />
+
+            {/* Live badge */}
+            <div className="absolute top-3 right-3 flex items-center gap-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-success animate-pulse"
+                style={{ boxShadow: '0 0 4px #2DFFA0' }} />
+              <span className="font-mono text-[8px] text-success tracking-widest uppercase">Live</span>
             </div>
 
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary uppercase tracking-tight leading-[0.9] mb-4">
-              SYSTEM<br />OVERVIEW
-            </h2>
+            <motion.span
+              key={dsaValue}
+              initial={{ opacity: 0, y: 4 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4 }}
+              className="font-sans font-black leading-none"
+              style={{
+                fontSize: 'clamp(2.2rem, 5vw, 3.2rem)',
+                color: '#3DDBFF',
+                textShadow: '0 0 30px rgba(61,219,255,0.5)',
+              }}
+            >
+              {dsaValue}
+            </motion.span>
+            <span className="font-sans font-bold text-sm text-white">DSA Problems</span>
+            <span className="font-mono text-[10px] text-muted">{dsaSublabel}</span>
+          </motion.a>
 
-            <div className="p-6 md:p-8 bg-surface/40 backdrop-blur-sm border border-borderSubtle relative overflow-hidden group-hover:border-accent/40 transition-colors duration-500">
-              {/* Top Accent Line */}
-              <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-accent via-primary to-transparent opacity-50"></div>
+          {/* ── Static stats ── */}
+          {STATIC_STATS.map((stat, i) => {
+            const idx = i + 1; // for alternating color logic
+            return (
+              <motion.div
+                key={stat.label}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: idx * 0.09, ease: [0.16, 1, 0.3, 1] }}
+                whileHover={{ y: -5, transition: { duration: 0.2 } }}
+                className={`${cardBase} cursor-default`}
+                style={cardStyle}
+              >
+                <TopAccentLine color={stat.color} glow={`0 0 8px ${stat.color}`} />
+                <InnerGlow color={idx % 2 === 0 ? 'rgba(61,219,255,0.05)' : 'rgba(139,111,255,0.05)'} />
 
-              <p className="text-[#E6E6E6] leading-[1.8] text-sm md:text-base font-mono relative z-10">
-                <span className="text-accent font-bold mr-2">{'>'}</span>
-                {PERSONAL_INFO.summary}
-              </p>
-            </div>
-          </div>
-
-          {/* Right Column: 2x2 Grid */}
-          <div className="grid grid-cols-2 gap-4">
-            <StatCard
-              label="YEARS_EXPERIENCE"
-              value="01+"
-            />
-            <StatCard
-              label="PROJECTS_BUILT"
-              value="04+"
-            />
-            <StatCard
-              label="DSA_SOLVED"
-              value={solvedCount}
-              isLoading={isLoading}
-              link={SOCIAL_LINKS.find(link => link.label === 'LeetCode')?.url}
-            />
-            <StatCard
-              label="ARCH_FOCUS"
-              value="A+"
-            />
-          </div>
+                <motion.span
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: idx * 0.09 + 0.3 }}
+                  className="font-sans font-black leading-none"
+                  style={{
+                    fontSize: 'clamp(2.2rem, 5vw, 3.2rem)',
+                    color: stat.color,
+                    textShadow: stat.neon,
+                  }}
+                >
+                  {stat.value}
+                </motion.span>
+                <span className="font-sans font-bold text-sm text-white">{stat.label}</span>
+                {stat.sublabel && <span className="font-mono text-[10px] text-muted">{stat.sublabel}</span>}
+              </motion.div>
+            );
+          })}
 
         </div>
       </div>
     </section>
   );
-};
-
-interface StatCardProps {
-  label: string;
-  value: string;
-  isLoading?: boolean;
-  link?: string;
-}
-
-const StatCard = ({ label, value, isLoading = false, link }: StatCardProps) => {
-  const CardContent = (
-    <div className={`relative p-6 md:p-8 bg-surface/30 backdrop-blur-md border border-borderSubtle transition-all duration-500 hover:bg-surface/60 hover:border-accent/50 hover:shadow-[0_0_30px_rgba(var(--accent),0.1)] hover:-translate-y-1 flex flex-col justify-center items-start h-full min-h-[160px] overflow-hidden ${link ? 'cursor-pointer group' : 'group'}`}>
-      {/* Background Hover Gradient */}
-      <div className="absolute -bottom-24 -right-24 w-48 h-48 bg-accent/20 rounded-full blur-[50px] opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"></div>
-
-      {/* Top Left Accent */}
-      <div className="absolute top-0 left-0 w-2 h-2 border-t-2 border-l-2 border-accent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
-      {/* Bottom Right Accent */}
-      <div className="absolute bottom-0 right-0 w-2 h-2 border-b-2 border-r-2 border-accent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
-
-      <div className="text-4xl md:text-5xl lg:text-6xl font-black text-primary mb-3 tracking-tighter font-mono tabular-nums relative z-10 group-hover:text-white transition-colors duration-300">
-        {isLoading ? <Loader2 className="w-8 h-8 animate-spin text-accent" /> : value}
-      </div>
-      <div className="font-mono text-[10px] font-bold tracking-widest uppercase text-secondary flex items-start gap-2 relative z-10 group-hover:text-accent/80 transition-colors duration-300 mt-auto">
-        <span className="text-accent mt-[1px]">{'>'}</span>
-        <span className="max-w-[120px]">{label}</span>
-      </div>
-    </div>
-  );
-
-  if (link) {
-    return (
-      <a href={link} target="_blank" rel="noopener noreferrer" className="block h-full relative group/link">
-        {CardContent}
-        {/* Animated outline for linked cards */}
-        <div className="absolute inset-0 border border-accent opacity-0 group-hover/link:opacity-100 scale-105 group-hover/link:scale-100 transition-all duration-500 rounded-sm pointer-events-none"></div>
-      </a>
-    );
-  }
-
-  return CardContent;
 };

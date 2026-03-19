@@ -1,146 +1,185 @@
-import React, { useEffect, useState } from 'react';
-import { ArrowUpRight } from 'lucide-react';
+import React from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ExternalLink } from 'lucide-react';
 import { SOCIAL_LINKS } from '../constants';
-import { SocialType } from '../types';
+import { useLeetCodeStats } from '../hooks/useLeetCodeStats';
 
-export const SocialGrid: React.FC = () => {
-  const [githubStats, setGithubStats] = useState<string | null>(null);
-  const [leetcodeStats, setLeetcodeStats] = useState<string | null>(null);
+const LEETCODE_USERNAME = 'soumyaranjanpadhi';
 
-  useEffect(() => {
-    // Fetch GitHub Stats
-    const fetchGithubStats = async () => {
-      try {
-        const response = await fetch('https://github-contributions-api.jogruber.de/v4/soumya7800');
-        if (response.ok) {
-          const data = await response.json();
-          const currentYear = new Date().getFullYear();
-          const currentYearContribs = data.total?.[currentYear];
+const platformMeta: Record<string, { glow: string; border: string; bg: string; label: string }> = {
+  GitHub:   { glow: '0 0 30px rgba(255,255,255,0.2)',  border: 'rgba(255,255,255,0.25)',  bg: 'rgba(255,255,255,0.06)',  label: '#fff' },
+  LinkedIn: { glow: '0 0 30px rgba(10,102,194,0.4)',   border: 'rgba(10,102,194,0.35)',   bg: 'rgba(10,102,194,0.08)',   label: '#4A9FFF' },
+  LeetCode: { glow: '0 0 30px rgba(255,161,22,0.4)',   border: 'rgba(255,161,22,0.35)',   bg: 'rgba(255,161,22,0.08)',   label: '#FFB547' },
+  Email:    { glow: '0 0 30px rgba(255,90,126,0.4)',   border: 'rgba(255,90,126,0.35)',   bg: 'rgba(255,90,126,0.08)',   label: '#FF5A7E' },
+};
 
-          if (currentYearContribs !== undefined) {
-            setGithubStats(`${currentYearContribs} Contributions in ${currentYear}`);
-          } else {
-            const lastYear = currentYear - 1;
-            const lastYearContribs = data.total?.[lastYear] || 0;
-            setGithubStats(`${lastYearContribs} Contributions in ${lastYear}`);
-          }
-        } else {
-          const userRes = await fetch('https://api.github.com/users/soumya7800');
-          const userData = await userRes.json();
-          if (userData.public_repos) {
-            setGithubStats(`${userData.public_repos} Public Repositories`);
-          }
-        }
-      } catch (error) {
-        console.error("Failed to fetch GitHub stats", error);
-        setGithubStats('Active Contributor');
-      }
-    };
-
-    // Fetch LeetCode Stats with Fallback
-    const fetchLeetCodeStats = async () => {
-      const leetCodeUsername = SOCIAL_LINKS.find(link => link.type === SocialType.LEETCODE)?.username || 'soumyaranjanpadhi';
-
-      try {
-        // Try Primary API (Heroku - might be sleeping)
-        const response = await fetch(`https://leetcode-stats-api.herokuapp.com/${leetCodeUsername}`);
-        const data = await response.json();
-
-        if (response.ok && data.status === 'success' && data.totalSolved) {
-          setLeetcodeStats(`${data.totalSolved} Questions Solved`);
-          return;
-        }
-
-        throw new Error("Primary API failed");
-      } catch (error) {
-        // Try Secondary API (Alfa on Render)
-        try {
-          const backupResponse = await fetch(`https://alfa-leetcode-api.onrender.com/${leetCodeUsername}/solved`);
-          const backupData = await backupResponse.json();
-
-          if (backupResponse.ok && backupData.solvedProblem) {
-            setLeetcodeStats(`${backupData.solvedProblem} Questions Solved`);
-            return;
-          }
-        } catch (backupError) {
-          console.error("All LeetCode APIs failed", backupError);
-        }
-
-        // Final Fallback if all APIs fail - ensures "Loading data..." is removed
-        setLeetcodeStats('500+ Questions Solved');
-      }
-    };
-
-    fetchGithubStats();
-    fetchLeetCodeStats();
-  }, []);
+// ── LeetCode Card — live solved count ─────────────────────────────────────
+const LeetCodeCard: React.FC<{ link: typeof SOCIAL_LINKS[0]; idx: number }> = ({ link, idx }) => {
+  const { stats, state } = useLeetCodeStats(LEETCODE_USERNAME);
+  const meta = platformMeta.LeetCode;
 
   return (
-    <section id="social" className="py-16 relative bg-background border-b border-borderSubtle overflow-hidden">
-      {/* Decorative Background */}
-      <div className="absolute inset-0 pointer-events-none opacity-30">
-        <div className="absolute top-0 right-[20%] w-[300px] h-[300px] bg-accent/10 rounded-full blur-[80px]"></div>
-      </div>
-      <div className="max-w-7xl mx-auto px-6 relative z-10">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {SOCIAL_LINKS.map((link) => {
-            // Determine the dynamic stats to show
-            let displayStats = link.stats;
-            if (link.type === SocialType.GITHUB && githubStats) {
-              displayStats = githubStats;
-            }
-            if (link.type === SocialType.LEETCODE) {
-              if (leetcodeStats) {
-                displayStats = leetcodeStats;
-              }
-            }
+    <motion.a
+      href={link.url}
+      target="_blank"
+      rel="noopener noreferrer"
+      initial={{ opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.55, delay: idx * 0.1, ease: [0.16, 1, 0.3, 1] }}
+      whileHover={{ scale: 1.05, y: -6 }}
+      whileTap={{ scale: 0.97 }}
+      className="group relative glass rounded-2xl p-6 flex flex-col items-center gap-4 cursor-pointer overflow-hidden shimmer-card"
+      style={{ border: '1px solid rgba(255,255,255,0.07)' }}
+    >
+      {/* Corner brackets on hover */}
+      <div className="absolute top-2.5 left-2.5 w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+        style={{ borderTop: `1.5px solid ${meta.border}`, borderLeft: `1.5px solid ${meta.border}` }} />
+      <div className="absolute bottom-2.5 right-2.5 w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+        style={{ borderBottom: `1.5px solid ${meta.border}`, borderRight: `1.5px solid ${meta.border}` }} />
 
-            return (
-              <a
-                key={link.type}
-                href={link.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group relative flex flex-col p-8 bg-surface/50 backdrop-blur-sm border border-borderSubtle hover:border-accent/50 transition-all duration-500 overflow-hidden h-full rounded-sm hover:-translate-y-1 hover:shadow-[0_10px_30px_rgba(var(--accent),0.1)]"
-              >
-                {/* Animated Background Glow */}
-                <div className="absolute inset-0 bg-gradient-to-br from-accent/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+      {/* Hover glow border */}
+      <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-all duration-400 pointer-events-none"
+        style={{ boxShadow: `${meta.glow}, inset 0 0 30px ${meta.bg}`, border: `1px solid ${meta.border}` }} />
 
-                {/* Corner Accents */}
-                <div className="absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2 border-accent opacity-0 group-hover:opacity-100 transition-all duration-300 -translate-x-2 -translate-y-2 group-hover:translate-x-0 group-hover:translate-y-0"></div>
-                <div className="absolute bottom-0 right-0 w-3 h-3 border-b-2 border-r-2 border-accent opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-2 translate-y-2 group-hover:translate-x-0 group-hover:translate-y-0"></div>
-
-                {/* Status line scanning effect */}
-                <div className="absolute top-0 left-0 w-[200%] h-[1px] bg-gradient-to-r from-transparent via-accent to-transparent -translate-x-full group-hover:animate-[scanline-hz_2s_linear_infinite]"></div>
-
-                <div className="flex justify-between items-start mb-10 relative z-10">
-                  <div className="font-mono text-[10px] font-bold tracking-widest uppercase text-secondary group-hover:text-primary transition-colors flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-secondary group-hover:bg-accent group-hover:animate-pulse transition-colors"></span>
-                    {link.type.toUpperCase()}_NODE
-                  </div>
-                  <div className="p-2 bg-background/80 border border-borderSubtle rounded-sm group-hover:border-accent/30 group-hover:bg-accent/10 transition-colors duration-300">
-                    <link.icon className="text-secondary group-hover:text-accent transition-colors" size={20} />
-                  </div>
-                </div>
-
-                <div className="mt-auto relative z-10">
-                  <h3 className="text-2xl font-black text-primary tracking-tight uppercase group-hover:text-white transition-colors mb-3">
-                    {link.label}
-                  </h3>
-                  <div className="font-mono text-[10px] font-bold text-secondary uppercase tracking-widest flex items-center gap-2 group-hover:text-accent/80 transition-colors bg-background/50 inline-flex px-3 py-1.5 border border-borderSubtle group-hover:border-accent/20 rounded-sm">
-                    <span className="text-accent animate-pulse">{'>'}</span>
-                    <span className="truncate">{displayStats}</span>
-                  </div>
-                </div>
-
-                <div className="absolute bottom-8 right-8 opacity-0 translate-x-4 translate-y-4 group-hover:opacity-100 group-hover:translate-x-0 group-hover:translate-y-0 transition-all duration-500 ease-out z-10">
-                  <ArrowUpRight size={24} className="text-accent" />
-                </div>
-              </a>
-            );
-          })}
+      {/* Icon circle */}
+      <div className="relative w-16 h-16 rounded-2xl flex items-center justify-center transition-all duration-400 group-hover:scale-110"
+        style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
+        <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+          style={{ background: meta.bg, boxShadow: `inset 0 0 20px ${meta.bg}` }} />
+        <link.icon size={26} className="relative z-10 text-secondary" />
+        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20 rounded-2xl">
+          <link.icon size={26} style={{ color: meta.label }} />
         </div>
       </div>
-    </section>
+
+      {/* Content */}
+      <div className="text-center relative z-10 flex flex-col items-center gap-1">
+        <p className="font-sans font-bold text-sm text-white">LeetCode</p>
+        <p className="font-mono text-[10px] text-secondary">{link.username}</p>
+
+        {/* Live solved count */}
+        <AnimatePresence mode="wait">
+          {state === 'fetching' && (
+            <motion.span key="fetching"
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              className="font-mono text-[11px] mt-1 animate-pulse" style={{ color: meta.label }}>
+              Fetching...
+            </motion.span>
+          )}
+          {state === 'waking' && (
+            <motion.span key="waking"
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              className="font-mono text-[10px] mt-1 text-center leading-snug" style={{ color: '#aaa' }}>
+              Waking API<br />
+              <span className="text-[9px] text-muted">please wait ~30s</span>
+            </motion.span>
+          )}
+          {(state === 'done' || state === 'fresh') && stats && (
+            <motion.div key="done"
+              initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
+              className="flex flex-col items-center gap-1 mt-0.5">
+              {/* Big solved number */}
+              <span className="font-mono text-[15px] font-black"
+                style={{ color: meta.label, textShadow: `0 0 16px ${meta.label}80` }}>
+                {stats.solved} Solved
+              </span>
+              {/* E / M / H breakdown */}
+              <div className="flex items-center gap-2">
+                <span className="font-mono text-[9px] font-bold" style={{ color: '#2DFFA0' }}>{stats.easy}E</span>
+                <div className="w-px h-2.5 bg-white/15" />
+                <span className="font-mono text-[9px] font-bold" style={{ color: '#FFB547' }}>{stats.medium}M</span>
+                <div className="w-px h-2.5 bg-white/15" />
+                <span className="font-mono text-[9px] font-bold" style={{ color: '#FF6B9D' }}>{stats.hard}H</span>
+              </div>
+            </motion.div>
+          )}
+          {state === 'error' && (
+            <motion.span key="error"
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+              className="font-mono text-[10px] mt-1 text-muted">
+              {stats ? `${stats.solved} Solved` : 'Visit Profile →'}
+            </motion.span>
+          )}
+        </AnimatePresence>
+      </div>
+
+      <ExternalLink size={11} className="absolute top-3 right-3 text-muted/60 opacity-0 group-hover:opacity-100 transition-opacity" />
+    </motion.a>
   );
 };
+
+// ── Generic card for GitHub / LinkedIn / Email ────────────────────────────
+const GenericCard: React.FC<{ link: typeof SOCIAL_LINKS[0]; idx: number }> = ({ link, idx }) => {
+  const meta = platformMeta[link.label] || platformMeta.Email;
+  return (
+    <motion.a
+      href={link.url}
+      target={link.label === 'Email' ? undefined : '_blank'}
+      rel="noopener noreferrer"
+      initial={{ opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.55, delay: idx * 0.1, ease: [0.16, 1, 0.3, 1] }}
+      whileHover={{ scale: 1.05, y: -6 }}
+      whileTap={{ scale: 0.97 }}
+      className="group relative glass rounded-2xl p-6 flex flex-col items-center gap-4 cursor-pointer overflow-hidden shimmer-card"
+      style={{ border: '1px solid rgba(255,255,255,0.07)' }}
+    >
+      <div className="absolute top-2.5 left-2.5 w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+        style={{ borderTop: `1.5px solid ${meta.border}`, borderLeft: `1.5px solid ${meta.border}` }} />
+      <div className="absolute bottom-2.5 right-2.5 w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+        style={{ borderBottom: `1.5px solid ${meta.border}`, borderRight: `1.5px solid ${meta.border}` }} />
+      <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-all duration-400 pointer-events-none"
+        style={{ boxShadow: `${meta.glow}, inset 0 0 30px ${meta.bg}`, border: `1px solid ${meta.border}` }} />
+
+      <div className="relative w-16 h-16 rounded-2xl flex items-center justify-center transition-all duration-400 group-hover:scale-110"
+        style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
+        <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+          style={{ background: meta.bg, boxShadow: `inset 0 0 20px ${meta.bg}` }} />
+        <link.icon size={26} className="relative z-10 text-secondary" />
+        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20 rounded-2xl">
+          <link.icon size={26} style={{ color: meta.label }} />
+        </div>
+      </div>
+
+      <div className="text-center relative z-10">
+        <p className="font-sans font-bold text-sm text-white">{link.label}</p>
+        <p className="font-mono text-[10px] text-secondary mt-0.5 truncate max-w-[110px]">{link.username}</p>
+        {link.stats && (
+          <p className="font-mono text-[11px] mt-1 font-bold" style={{ color: meta.label }}>{link.stats}</p>
+        )}
+      </div>
+
+      <ExternalLink size={11} className="absolute top-3 right-3 text-muted/60 opacity-0 group-hover:opacity-100 transition-opacity" />
+    </motion.a>
+  );
+};
+
+// ── Section ───────────────────────────────────────────────────────────────
+export const SocialGrid: React.FC = () => (
+  <section className="py-20 relative overflow-hidden border-b border-borderSubtle">
+    <div className="absolute top-0 right-0 w-96 h-96 bg-accentSec/10 rounded-full blur-[100px] pointer-events-none" />
+    <div className="relative z-10 w-full">
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        className="flex flex-col gap-3 mb-12"
+      >
+        <span className="section-label">Connect</span>
+        <h2 className="font-sans font-black tracking-tight" style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)' }}>
+          Find Me <span className="text-gradient-accent text-neon">Online</span>
+        </h2>
+      </motion.div>
+
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {SOCIAL_LINKS.map((link, idx) =>
+          link.label === 'LeetCode'
+            ? <LeetCodeCard key="lc" link={link} idx={idx} />
+            : <GenericCard  key={link.label} link={link} idx={idx} />
+        )}
+      </div>
+    </div>
+  </section>
+);

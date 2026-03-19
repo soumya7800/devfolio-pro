@@ -1,127 +1,164 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { ExternalLink, Github, FolderGit2 } from 'lucide-react';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ExternalLink, Github, BookOpen, FolderGit2 } from 'lucide-react';
 import { Project } from '../types';
 
 interface ProjectCardProps {
-    project: Project;
-    index: number;
+  project: Project;
+  index: number;
 }
 
 export const ProjectCard: React.FC<ProjectCardProps> = ({ project, index }) => {
-    return (
-        <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-50px" }}
-            transition={{ duration: 0.5, delay: index * 0.1, ease: "easeOut" }}
-            className="group h-full flex flex-col border border-borderSubtle bg-surface/30 backdrop-blur-md transition-all duration-500 hover:border-accent/40 relative overflow-hidden hover:-translate-y-1 hover:shadow-[0_10px_40px_rgba(var(--accent),0.1)] rounded-sm"
-        >
-            {/* Animated Border Glow */}
-            <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-accent to-transparent scale-x-0 group-hover:scale-x-100 transition-transform duration-700 origin-left"></div>
+  const [hovered, setHovered] = useState(false);
 
-            {/* Ambient inner glow */}
-            <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-accent/5 rounded-full blur-[80px] opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"></div>
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-50px' }}
+      transition={{ duration: 0.6, delay: index * 0.1, ease: [0.16, 1, 0.3, 1] }}
+      whileHover={{ y: -6, transition: { duration: 0.25, ease: [0.16, 1, 0.3, 1] } }}
+      whileTap={{ scale: 0.99 }}
+      onHoverStart={() => setHovered(true)}
+      onHoverEnd={() => setHovered(false)}
+      className="group relative glass rounded-2xl overflow-hidden shimmer-card flex flex-col h-full cursor-default"
+      style={{ border: '1px solid rgba(255,255,255,0.07)' }}
+    >
+      {/* Hover gradient border */}
+      <motion.div
+        initial={false}
+        animate={{ opacity: hovered ? 1 : 0 }}
+        transition={{ duration: 0.3 }}
+        className="absolute inset-0 rounded-2xl pointer-events-none z-0"
+        style={{ border: '1px solid rgba(61,219,255,0.3)', boxShadow: '0 0 40px rgba(61,219,255,0.1), inset 0 0 40px rgba(61,219,255,0.03)' }}
+      />
+      {/* Top glow line */}
+      <motion.div
+        initial={false}
+        animate={{ scaleX: hovered ? 1 : 0 }}
+        transition={{ duration: 0.4, ease: [0.16,1,0.3,1] }}
+        style={{ transformOrigin: 'left', position: 'absolute', top: 0, left: 0, right: 0, height: '1px',
+          background: 'linear-gradient(90deg, #3DDBFF, #8B6FFF, transparent)', zIndex: 10 }}
+      />
 
-            {/* Top Row: Header */}
-            <div className="flex justify-between items-center p-6 border-b border-borderSubtle/50 bg-surface/50 relative z-10">
-                <div className="flex items-center gap-4">
-                    <div className="p-2 bg-background/80 border border-borderSubtle rounded-sm group-hover:border-accent/30 group-hover:bg-accent/10 transition-colors duration-300">
-                        <FolderGit2 className="text-secondary group-hover:text-accent transition-colors" size={20} />
-                    </div>
-                    <h3 className="font-mono text-base lg:text-lg font-black text-primary uppercase tracking-widest group-hover:text-white transition-colors">
-                        {project.title}
-                    </h3>
-                </div>
-                <div className="flex gap-2">
-                    <span className="hidden sm:inline-block px-2 py-1 font-mono text-[10px] font-bold tracking-widest uppercase bg-surface border border-borderSubtle text-secondary">
-                        SYSTEM_MODULE
-                    </span>
-                    <span className="px-2 py-1 font-mono text-[10px] font-bold tracking-widest uppercase bg-primary text-background">
-                        ACTIVE
-                    </span>
-                </div>
+      {/* Header */}
+      <div className="relative z-10 flex items-center justify-between p-5 border-b border-borderSubtle bg-surfaceDeep/40">
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-accent/15 to-accentSec/10 border border-accent/20 flex items-center justify-center">
+            <FolderGit2 size={16} className="text-accent" />
+          </div>
+          <h3 className="font-sans font-black text-base text-white tracking-tight group-hover:text-gradient-accent transition-all">
+            {project.title}
+          </h3>
+        </div>
+        <span className="px-2 py-1 rounded-full bg-success/10 border border-success/25 font-mono text-[9px] font-bold text-success uppercase tracking-widest">
+          Active
+        </span>
+      </div>
+
+      {/* Body */}
+      <div className="relative z-10 flex flex-col lg:flex-row flex-grow">
+        {/* Left: Overview + Features */}
+        <div className="flex-1 p-6 flex flex-col gap-5 lg:border-r border-borderSubtle">
+          <div>
+            <p className="font-mono text-[10px] text-accent font-bold tracking-widest uppercase mb-2">Overview</p>
+            <p className="font-body text-sm text-secondary leading-relaxed">{project.overview}</p>
+          </div>
+          {project.features && project.features.length > 0 && (
+            <div>
+              <p className="font-mono text-[10px] text-accentSec font-bold tracking-widest uppercase mb-3">Capabilities</p>
+              <ul className="flex flex-col gap-2.5">
+                {project.features.map((feat, i) => (
+                  <li key={i} className="flex items-start gap-2.5">
+                    <span className="w-1 h-1 rounded-full bg-accent mt-2 shrink-0 opacity-70" />
+                    <span className="font-body text-sm text-secondary">{feat}</span>
+                  </li>
+                ))}
+              </ul>
             </div>
+          )}
+        </div>
 
-            {/* Middle Content Grid */}
-            <div className="flex flex-col lg:flex-row flex-grow relative z-10">
-                {/* Left: Overview & Features */}
-                <div className="p-6 lg:p-8 lg:w-2/3 border-b lg:border-b-0 lg:border-r border-borderSubtle/50 flex flex-col gap-8">
-                    <div>
-                        <div className="flex items-center gap-2 font-mono text-[10px] uppercase text-accent mb-3 tracking-widest font-bold">
-                            <span className="w-1.5 h-1.5 bg-accent opacity-50"></span>
-                            OVERVIEW
-                        </div>
-                        <p className="font-mono text-sm text-[#D1D1D1] leading-[1.8] mb-6">
-                            {project.overview}
-                        </p>
-                    </div>
-                    {project.features && project.features.length > 0 && (
-                        <div>
-                            <div className="flex items-center gap-2 font-mono text-[10px] uppercase text-accent mb-4 tracking-widest font-bold">
-                                <span className="w-1.5 h-1.5 bg-accent opacity-50"></span>
-                                CAPABILITIES
-                            </div>
-                            <ul className="flex flex-col gap-3">
-                                {project.features.map((feature, i) => (
-                                    <li key={i} className="flex items-start gap-3">
-                                        <span className="font-mono text-accent text-xs mt-[2px] opacity-70">{'>>'}</span>
-                                        <span className="font-mono text-sm text-secondary group-hover:text-[#E6E6E6] transition-colors">{feature}</span>
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-                    )}
-                </div>
-
-                {/* Right: Tech Stack & Links */}
-                <div className="p-6 lg:p-8 lg:w-1/3 flex flex-col justify-between bg-surface/20">
-                    <div>
-                        <div className="flex items-center gap-2 font-mono text-[10px] uppercase text-accent mb-4 tracking-widest font-bold">
-                            <span className="w-1.5 h-1.5 bg-accent opacity-50"></span>
-                            TECH_STACK
-                        </div>
-                        <div className="flex flex-wrap gap-2">
-                            {project.techStack.map((tech, i) => (
-                                <span
-                                    key={i}
-                                    className="px-3 py-1.5 font-mono text-[10px] font-bold tracking-widest uppercase bg-background/50 border border-borderSubtle text-secondary hover:text-accent hover:border-accent/40 hover:bg-accent/10 transition-all duration-300 rounded-sm cursor-default"
-                                >
-                                    {tech}
-                                </span>
-                            ))}
-                        </div>
-                    </div>
-
-                    <div className="mt-10 flex flex-col gap-3">
-                        {project.links.github && (
-                            <a
-                                href={project.links.github}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="flex items-center justify-between w-full p-4 border border-borderSubtle text-secondary hover:text-accent hover:border-accent/50 hover:bg-surface/80 transition-all duration-300 group/btn relative overflow-hidden rounded-sm"
-                            >
-                                {/* Button Hover Glint */}
-                                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-accent/10 to-transparent -translate-x-full group-hover/btn:animate-[scanline-hz_1s_linear_infinite]"></div>
-
-                                <span className="font-mono text-[10px] font-bold tracking-widest uppercase relative z-10">SOURCE_CODE</span>
-                                <Github size={16} className="group-hover/btn:text-accent transition-colors relative z-10" />
-                            </a>
-                        )}
-                        {project.links.demo && (
-                            <a
-                                href={project.links.demo}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="flex items-center justify-between w-full p-4 bg-primary text-background font-mono text-[10px] font-bold tracking-widest uppercase hover:bg-white transition-colors group/btn relative overflow-hidden rounded-sm"
-                            >
-                                <span className="relative z-10 group-hover/btn:text-black">INITIALIZE</span>
-                                <ExternalLink size={16} className="relative z-10 group-hover/btn:text-black" />
-                            </a>
-                        )}
-                    </div>
-                </div>
+        {/* Right: Tech + Actions */}
+        <div className="lg:w-52 xl:w-60 p-6 flex flex-col justify-between gap-5 bg-surfaceDeep/30">
+          <div>
+            <p className="font-mono text-[10px] text-accent font-bold tracking-widest uppercase mb-3">Tech Stack</p>
+            <div className="flex flex-wrap gap-1.5">
+              {project.techStack.map((tech) => (
+                <span key={tech} className="chip text-[9px] py-1 px-2">{tech}</span>
+              ))}
             </div>
-        </motion.div>
-    );
+          </div>
+
+          {/* Hover actions - slide up reveal */}
+          <div className="flex flex-col gap-2">
+            <AnimatePresence>
+              {hovered && (
+                <motion.p
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 6 }}
+                  className="font-mono text-[9px] text-muted tracking-widest uppercase mb-1"
+                >
+                  Quick Actions
+                </motion.p>
+              )}
+            </AnimatePresence>
+
+            {project.links.github && (
+              <motion.a
+                href={project.links.github}
+                target="_blank"
+                rel="noopener noreferrer"
+                whileHover={{ x: 3 }}
+                whileTap={{ scale: 0.97 }}
+                className="flex items-center justify-between w-full px-4 py-2.5 rounded-xl glass
+                  border border-borderSubtle hover:border-accent/30 hover:bg-accent/5
+                  font-sans text-xs font-semibold text-secondary hover:text-white
+                  transition-all duration-200"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <span className="flex items-center gap-2">
+                  <Github size={13} />
+                  Source Code
+                </span>
+                <ExternalLink size={11} className="opacity-50" />
+              </motion.a>
+            )}
+            {project.links.demo && (
+              <motion.a
+                href={project.links.demo}
+                target="_blank"
+                rel="noopener noreferrer"
+                whileHover={{ x: 3 }}
+                whileTap={{ scale: 0.97 }}
+                className="flex items-center justify-between w-full px-4 py-2.5 rounded-xl
+                  bg-gradient-to-r from-accent/15 to-accentSec/15
+                  border border-accent/30 hover:border-accent/55 hover:shadow-glow-sm
+                  font-sans text-xs font-bold text-accent
+                  transition-all duration-200"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <span className="flex items-center gap-2">
+                  <ExternalLink size={13} />
+                  Live Demo
+                </span>
+              </motion.a>
+            )}
+            <motion.button
+              whileHover={{ x: 3 }}
+              whileTap={{ scale: 0.97 }}
+              className="flex items-center gap-2 w-full px-4 py-2.5 rounded-xl glass
+                border border-accentSec/20 hover:border-accentSec/40 hover:bg-accentSec/5
+                font-sans text-xs font-semibold text-accentSec
+                transition-all duration-200"
+            >
+              <BookOpen size={13} />
+              Case Study
+            </motion.button>
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  );
 };

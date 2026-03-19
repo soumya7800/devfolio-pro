@@ -1,66 +1,111 @@
 import React from 'react';
-import { Cpu } from 'lucide-react';
-import { SKILL_CATEGORIES } from '../constants';
 import { motion } from 'framer-motion';
+import { SKILL_CATEGORIES } from '../constants';
 
-export const Skills: React.FC = () => {
-  return (
-    <section id="skills" className="py-20 relative overflow-hidden bg-background scroll-mt-24 border-b border-borderSubtle">
-      {/* Ambient Glow */}
-      <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-accent/5 rounded-full blur-[100px] pointer-events-none mix-blend-screen"></div>
+const ACCENT_COLS = [
+  { from: 'rgba(61,219,255,0.2)',  to: 'rgba(61,219,255,0.05)',  border: 'rgba(61,219,255,0.25)',  icon: '#3DDBFF', neon: '0 0 20px rgba(61,219,255,0.4)' },
+  { from: 'rgba(139,111,255,0.2)', to: 'rgba(139,111,255,0.05)', border: 'rgba(139,111,255,0.25)', icon: '#8B6FFF', neon: '0 0 20px rgba(139,111,255,0.4)' },
+  { from: 'rgba(255,107,157,0.2)', to: 'rgba(255,107,157,0.05)', border: 'rgba(255,107,157,0.25)', icon: '#FF6B9D', neon: '0 0 20px rgba(255,107,157,0.4)' },
+];
 
-      <div className="max-w-7xl mx-auto px-6 relative z-10 w-full">
-        <div className="flex flex-col items-start mb-16 group">
-          <div className="inline-flex items-center gap-2 px-3 py-1 border border-accent/30 bg-accent/10 mb-6 group-hover:bg-accent/20 transition-colors duration-300">
-            <span className="w-1.5 h-1.5 bg-accent rounded-full animate-pulse shadow-[0_0_10px_rgba(var(--accent),0.8)]"></span>
-            <span className="font-mono text-[10px] font-bold tracking-widest uppercase text-accent">
-              CORE_COMPETENCIES
-            </span>
-          </div>
+export const Skills: React.FC = () => (
+  <section id="skills" className="py-24 relative overflow-hidden border-b border-borderSubtle scroll-mt-24">
+    <div className="absolute top-0 right-1/4 w-96 h-96 bg-accent/8 rounded-full blur-[120px] pointer-events-none" />
+    <div className="absolute bottom-0 left-0 w-80 h-80 bg-accentSec/8 rounded-full blur-[100px] pointer-events-none" />
 
-          <h2 className="text-4xl md:text-5xl lg:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-br from-primary via-primary to-accent/50 tracking-tighter uppercase relative">
-            Capabilities
-          </h2>
-        </div>
+    <div className="relative z-10 w-full">
+      {/* Header */}
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        className="flex flex-col gap-3 mb-14"
+      >
+        <span className="section-label">Capabilities</span>
+        <h2 className="font-sans font-black text-white tracking-tight" style={{ fontSize: 'clamp(2.5rem, 6vw, 4.5rem)' }}>
+          Technical <span className="text-gradient-accent text-neon">Stack</span>
+        </h2>
+        <p className="font-body text-secondary text-base max-w-[48ch] mt-1">
+          Core technologies I use to build scalable, production-ready systems.
+        </p>
+      </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {SKILL_CATEGORIES.map((category, idx) => (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        {SKILL_CATEGORIES.map((cat, idx) => {
+          const col = ACCENT_COLS[idx % ACCENT_COLS.length];
+          return (
             <motion.div
-              key={category.title}
-              initial={{ opacity: 0, y: 20 }}
+              key={cat.title}
+              initial={{ opacity: 0, y: 22 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: idx * 0.1, ease: 'easeOut' }}
-              className={`group relative p-8 bg-surface/40 backdrop-blur-md border border-borderSubtle hover:border-accent/40 transition-all duration-500 overflow-hidden ${idx === 0 || idx === 3 ? 'lg:col-span-2' : ''}`}
+              transition={{ duration: 0.55, delay: idx * 0.07, ease: [0.16, 1, 0.3, 1] }}
+              whileHover={{ y: -5, transition: { duration: 0.2 } }}
+              className="group relative glass rounded-2xl p-6 shimmer-card overflow-hidden cursor-default"
+              style={{ border: '1px solid rgba(255,255,255,0.07)' }}
             >
-              {/* Card Hover Glow */}
-              <div className="absolute top-0 left-0 w-[200px] h-[200px] bg-accent/10 rounded-full blur-[60px] opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none -translate-x-1/2 -translate-y-1/2"></div>
+              {/* Dynamic hover glow */}
+              <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-all duration-400 pointer-events-none"
+                style={{
+                  background: `radial-gradient(circle at top left, ${col.from} 0%, transparent 60%)`,
+                  border: `1px solid ${col.border}`,
+                  boxShadow: `${col.neon}`,
+                }} />
+              {/* Top sweep line */}
+              <div className="absolute top-0 left-0 right-0 h-px opacity-0 group-hover:opacity-100 transition-all duration-400 scale-x-0 group-hover:scale-x-100"
+                style={{ background: `linear-gradient(90deg, transparent, ${col.icon}, transparent)`, transformOrigin: 'left', transition: 'transform 0.4s ease, opacity 0.3s' }} />
 
-              {/* Tech Line Top */}
-              <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-accent/50 to-transparent scale-x-0 group-hover:scale-x-100 transition-transform duration-700 origin-left"></div>
-
-              <div className="flex items-center gap-4 mb-8 pt-2 border-t border-accent/50 relative z-10 w-fit">
-                <div className="p-2 bg-background/80 border border-borderSubtle rounded-sm group-hover:border-accent/30 group-hover:bg-accent/10 transition-colors duration-300">
-                  <category.icon size={16} className="text-secondary group-hover:text-accent transition-colors" />
+              {/* Card header */}
+              <div className="flex items-center gap-3 mb-5">
+                <div
+                  className="w-11 h-11 rounded-2xl flex items-center justify-center transition-all duration-300 group-hover:scale-110"
+                  style={{
+                    background: `linear-gradient(135deg, ${col.from}, ${col.to})`,
+                    border: `1px solid ${col.border}`,
+                    boxShadow: `0 0 0 ${col.icon}00`,
+                  }}
+                  onMouseEnter={e => (e.currentTarget as HTMLElement).style.boxShadow = col.neon}
+                  onMouseLeave={e => (e.currentTarget as HTMLElement).style.boxShadow = 'none'}
+                >
+                  <cat.icon size={18} style={{ color: col.icon }} />
                 </div>
-                <h3 className="text-sm font-black tracking-tight uppercase text-secondary group-hover:text-primary transition-colors">{category.title}</h3>
+                <div>
+                  <h3 className="font-sans font-bold text-sm text-white group-hover:transition-all" style={{ }}>
+                    {cat.title}
+                  </h3>
+                  <p className="font-mono text-[9px] text-muted tracking-widest uppercase mt-0.5">{cat.skills.length} skills</p>
+                </div>
               </div>
 
-              {/* Skills Tags */}
-              <div className="flex flex-wrap gap-2 relative z-10">
-                {category.skills.map((skill) => (
-                  <div
+              {/* Chip grid */}
+              <div className="flex flex-wrap gap-1.5">
+                {cat.skills.map((skill) => (
+                  <motion.span
                     key={skill}
-                    className="px-4 py-2 bg-background/50 border border-borderSubtle text-secondary font-mono text-[10px] font-bold tracking-widest uppercase hover:bg-accent/10 hover:text-accent hover:border-accent/50 transition-all duration-300 cursor-default flex items-center leading-none rounded-sm"
+                    whileHover={{ scale: 1.06 }}
+                    className="text-[10px] font-semibold px-2.5 py-1 rounded-full cursor-default transition-all duration-200 font-sans"
+                    style={{
+                      background: `${col.from.replace('0.2', '0.08')}`,
+                      border: `1px solid ${col.border.replace('0.25', '0.15')}`,
+                      color: col.icon,
+                    }}
+                    onMouseEnter={e => {
+                      (e.currentTarget as HTMLElement).style.background = col.from.replace('0.2', '0.15');
+                      (e.currentTarget as HTMLElement).style.boxShadow = `0 0 10px ${col.border.replace('0.25','0.3')}`;
+                    }}
+                    onMouseLeave={e => {
+                      (e.currentTarget as HTMLElement).style.background = col.from.replace('0.2', '0.08');
+                      (e.currentTarget as HTMLElement).style.boxShadow = 'none';
+                    }}
                   >
                     {skill}
-                  </div>
+                  </motion.span>
                 ))}
               </div>
             </motion.div>
-          ))}
-        </div>
+          );
+        })}
       </div>
-    </section>
-  );
-};
+    </div>
+  </section>
+);
