@@ -60,31 +60,22 @@ const LeetCodeCard: React.FC<{ link: typeof SOCIAL_LINKS[0]; idx: number }> = ({
 
         {/* Live solved count */}
         <AnimatePresence mode="wait">
-          {state === 'fetching' && (
-            <motion.span key="fetching"
+          {state === 'loading' && !stats && (
+            <motion.span key="loading"
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
               className="font-mono text-[11px] mt-1 animate-pulse" style={{ color: meta.label }}>
               Fetching...
             </motion.span>
           )}
-          {state === 'waking' && (
-            <motion.span key="waking"
-              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-              className="font-mono text-[10px] mt-1 text-center leading-snug" style={{ color: '#aaa' }}>
-              Waking API<br />
-              <span className="text-[9px] text-muted">please wait ~30s</span>
-            </motion.span>
-          )}
-          {(state === 'done' || state === 'fresh') && stats && (
-            <motion.div key="done"
+          {/* Show count as soon as we have data (even while still loading fresh data) */}
+          {stats && (
+            <motion.div key="count"
               initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
               className="flex flex-col items-center gap-1 mt-0.5">
-              {/* Big solved number */}
               <span className="font-mono text-[15px] font-black"
                 style={{ color: meta.label, textShadow: `0 0 16px ${meta.label}80` }}>
                 {stats.solved} Solved
               </span>
-              {/* E / M / H breakdown */}
               <div className="flex items-center gap-2">
                 <span className="font-mono text-[9px] font-bold" style={{ color: '#2DFFA0' }}>{stats.easy}E</span>
                 <div className="w-px h-2.5 bg-white/15" />
@@ -92,13 +83,16 @@ const LeetCodeCard: React.FC<{ link: typeof SOCIAL_LINKS[0]; idx: number }> = ({
                 <div className="w-px h-2.5 bg-white/15" />
                 <span className="font-mono text-[9px] font-bold" style={{ color: '#FF6B9D' }}>{stats.hard}H</span>
               </div>
+              {state === 'loading' && (
+                <span className="font-mono text-[8px] text-muted animate-pulse">updating...</span>
+              )}
             </motion.div>
           )}
-          {state === 'error' && (
+          {state === 'error' && !stats && (
             <motion.span key="error"
               initial={{ opacity: 0 }} animate={{ opacity: 1 }}
               className="font-mono text-[10px] mt-1 text-muted">
-              {stats ? `${stats.solved} Solved` : 'Visit Profile →'}
+              Visit Profile →
             </motion.span>
           )}
         </AnimatePresence>

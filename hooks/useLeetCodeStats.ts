@@ -1,144 +1,159 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 
 // ─────────────────────────────────────────────────────────────────────────────
-// useLeetCodeStats — Permanent, bullet-proof LeetCode stats fetcher
+// useLeetCodeStats — Always-fresh LeetCode stats
 //
-// The API (alfa-leetcode-api on Render free tier) can take 50-60 seconds to
-// wake up from sleep. This hook handles that gracefully:
-//  1. Serves from localStorage cache INSTANTLY (< 1ms) if data is fresh
-//  2. Fetches fresh data in the background (shows "Waking up..." if slow)
-//  3. 60-second timeout to handle Render cold starts
-//  4. Caches successful response for 30 minutes
-//  5. Falls back to last known cache if fetch fails
-//  6. Never shows stale "Loading data..." permanently
+// Strategy:
+//  1. Immediately show last cached value (instant UI)
+//  2. ALWAYS fetch fresh data on every mount — no "skip if cached"
+//  3. When fresh data arrives → update state + cache
+//  4. Cache TTL is only 5 minutes (avoid hammering, but stays current)
+//  5. On fetch failure → state = 'error' but still shows last known value
+//  6. Uses allorigins.win proxy to bypass CORS on alfa-leetcode-api
 // ─────────────────────────────────────────────────────────────────────────────
 
-const CACHE_KEY_PREFIX = 'lc_v3_';
-const CACHE_TTL = 30 * 60 * 1000;      // 30 minutes
-const FETCH_TIMEOUT = 65_000;           // 65 seconds — covers Render cold start
+const CACHE_KEY = 'lc_v4_';
+const CACHE_TTL = 5 * 60 * 1000;   // 5 minutes — keeps data fresh
+const TIMEOUT_MS = 25_000;          // 25s per attempt
 
 export interface LCStats {
   solved: number;
   easy:   number;
   medium: number;
   hard:   number;
-  ts:     number;         // when fetched
+  ts:     number;
 }
 
-// ── localStorage helpers ──────────────────────────────────────────────────
+export type LoadState = 'loading' | 'done' | 'error';
+
+export interface UseLCResult {
+  stats:  LCStats | null;
+  state:  LoadState;
+}
+
+// ── cache helpers ─────────────────────────────────────────────────────────
 function readCache(username: string): LCStats | null {
   try {
-    const raw = localStorage.getItem(CACHE_KEY_PREFIX + username);
+    const raw = localStorage.getItem(CACHE_KEY + username);
     if (!raw) return null;
-    const s = JSON.parse(raw) as LCStats;
-    return Date.now() - s.ts < CACHE_TTL ? s : null;  // null = stale
-  } catch { return null; }
-}
-
-function readStaleCache(username: string): LCStats | null {
-  try {
-    const raw = localStorage.getItem(CACHE_KEY_PREFIX + username);
-    return raw ? (JSON.parse(raw) as LCStats) : null;
+    return JSON.parse(raw) as LCStats;          // return even if stale — for instant display
   } catch { return null; }
 }
 
 function writeCache(username: string, s: LCStats) {
-  try { localStorage.setItem(CACHE_KEY_PREFIX + username, JSON.stringify(s)); }
-  catch { /* quota exceeded — no-op */ }
+  try { localStorage.setItem(CACHE_KEY + username, JSON.stringify(s)); }
+  catch { /* quota — no‑op */ }
 }
 
-// ── fetch with timeout ────────────────────────────────────────────────────
-async function fetchWithTimeout(url: string, ms: number): Promise<Response> {
+function clearCache(username: string) {
+  try { localStorage.removeItem(CACHE_KEY + username); }
+  catch { /* no‑op */ }
+}
+
+// ── fetch helpers ─────────────────────────────────────────────────────────
+async function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
   const ctrl = new AbortController();
   const tid = setTimeout(() => ctrl.abort(), ms);
-  try {
-    const res = await fetch(url, { signal: ctrl.signal });
-    return res;
-  } finally {
-    clearTimeout(tid);
-  }
+  try { return await promise; }
+  finally { clearTimeout(tid); }
 }
 
-// ── actual fetch from alfa-leetcode-api ───────────────────────────────────
-async function fetchLCStats(username: string): Promise<LCStats | null> {
+async function tryAlfaApi(username: string): Promise<LCStats | null> {
   try {
-    const res = await fetchWithTimeout(
-      `https://alfa-leetcode-api.onrender.com/${username}/solved`,
-      FETCH_TIMEOUT
+    const res = await withTimeout(
+      fetch(`https://alfa-leetcode-api.onrender.com/${username}/solved`),
+      TIMEOUT_MS
     );
     if (!res.ok) return null;
-    const data = await res.json();
-
-    const solved = data?.solvedProblem ?? data?.acSubmissionNum?.[0]?.count;
+    const d = await res.json();
+    const solved = d?.solvedProblem ?? null;
     if (solved == null) return null;
+    const ac: { difficulty: string; count: number }[] = d.acSubmissionNum ?? [];
+    const g = (diff: string) => ac.find(x => x.difficulty === diff)?.count ?? 0;
+    return { solved, easy: d.easySolved ?? g('Easy'), medium: d.mediumSolved ?? g('Medium'), hard: d.hardSolved ?? g('Hard'), ts: Date.now() };
+  } catch { return null; }
+}
 
-    // Try to parse easy/medium/hard from acSubmissionNum array
-    const ac: Array<{ difficulty: string; count: number }> = data.acSubmissionNum ?? [];
-    const get = (d: string) => ac.find(x => x.difficulty === d)?.count ?? 0;
+async function tryAllOriginsProxy(username: string): Promise<LCStats | null> {
+  try {
+    const target = encodeURIComponent(`https://alfa-leetcode-api.onrender.com/${username}/solved`);
+    const res = await withTimeout(
+      fetch(`https://api.allorigins.win/get?url=${target}`),
+      TIMEOUT_MS
+    );
+    if (!res.ok) return null;
+    const wrapper = await res.json();
+    const d = JSON.parse(wrapper.contents ?? '{}');
+    const solved = d?.solvedProblem ?? null;
+    if (solved == null) return null;
+    const ac: { difficulty: string; count: number }[] = d.acSubmissionNum ?? [];
+    const g = (diff: string) => ac.find(x => x.difficulty === diff)?.count ?? 0;
+    return { solved, easy: d.easySolved ?? g('Easy'), medium: d.mediumSolved ?? g('Medium'), hard: d.hardSolved ?? g('Hard'), ts: Date.now() };
+  } catch { return null; }
+}
 
-    return {
-      solved,
-      easy:   data.easySolved   ?? get('Easy'),
-      medium: data.mediumSolved ?? get('Medium'),
-      hard:   data.hardSolved   ?? get('Hard'),
-      ts:     Date.now(),
+async function tryLeetcodeStatsApi(username: string): Promise<LCStats | null> {
+  try {
+    const res = await withTimeout(
+      fetch(`https://leetcode-stats-api.herokuapp.com/${username}`),
+      TIMEOUT_MS
+    );
+    if (!res.ok) return null;
+    const d = await res.json();
+    if (!d?.totalSolved) return null;
+    return { solved: d.totalSolved, easy: d.easySolved ?? 0, medium: d.mediumSolved ?? 0, hard: d.hardSolved ?? 0, ts: Date.now() };
+  } catch { return null; }
+}
+
+// ── main fetch: race all three sources ───────────────────────────────────
+async function fetchFresh(username: string): Promise<LCStats | null> {
+  // Race all three — use whichever comes back first with valid data
+  return new Promise(resolve => {
+    let settled = false;
+    const done = (result: LCStats | null) => {
+      if (!settled && result) { settled = true; resolve(result); }
     };
-  } catch {
-    return null;
-  }
+
+    tryAlfaApi(username).then(done);
+    tryAllOriginsProxy(username).then(done);
+    tryLeetcodeStatsApi(username).then(done);
+
+    // If ALL fail after TIMEOUT_MS + 1s buffer, resolve with null
+    setTimeout(() => { if (!settled) { settled = true; resolve(null); } }, TIMEOUT_MS + 1000);
+  });
 }
 
 // ── hook ──────────────────────────────────────────────────────────────────
-export type LoadState = 'fresh' | 'fetching' | 'waking' | 'done' | 'error';
-
-export interface UseLCResult {
-  stats:    LCStats | null;
-  state:    LoadState;
-}
-
 export function useLeetCodeStats(username: string): UseLCResult {
-  const [stats, setStats] = useState<LCStats | null>(() => readCache(username) ?? readStaleCache(username));
-  const [state, setState] = useState<LoadState>(() => readCache(username) ? 'fresh' : 'fetching');
-  const fetchedRef = useRef(false);
+  const [stats, setStats] = useState<LCStats | null>(() => readCache(username));
+  const [state, setState] = useState<LoadState>('loading');
 
   useEffect(() => {
     if (!username) return;
 
-    const fresh = readCache(username);
-    if (fresh) {
-      setStats(fresh);
-      setState('fresh');
-      // Still refresh silently in background after 2s
-      const t = setTimeout(() => {
-        fetchLCStats(username).then(result => {
-          if (result) { writeCache(username, result); setStats(result); }
-        });
-      }, 2000);
-      return () => clearTimeout(t);
-    }
+    // Show cached value instantly while fetching
+    const cached = readCache(username);
+    if (cached) setStats(cached);
 
-    // No fresh cache — fetch now
-    if (fetchedRef.current) return;
-    fetchedRef.current = true;
+    // ALWAYS fetch fresh — never skip
+    setState('loading');
+    let cancelled = false;
 
-    setStats(readStaleCache(username));  // show stale immediately if available
-    setState('fetching');
-
-    // After 8 seconds without a response, warn user it's waking up
-    const wakeTimer = setTimeout(() => setState('waking'), 8000);
-
-    fetchLCStats(username).then(result => {
-      clearTimeout(wakeTimer);
+    fetchFresh(username).then(result => {
+      if (cancelled) return;
       if (result) {
+        // Got fresh data — update immediately
         writeCache(username, result);
         setStats(result);
         setState('done');
       } else {
+        // All failed — keep showing last cached, mark error
+        clearCache(username);   // clear so next reload tries fresh
         setState('error');
       }
     });
 
-    return () => clearTimeout(wakeTimer);
+    return () => { cancelled = true; };
   }, [username]);
 
   return { stats, state };

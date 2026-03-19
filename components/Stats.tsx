@@ -123,11 +123,11 @@ const StatCard: React.FC<StatProps> = ({
 export const Stats: React.FC = () => {
   const { stats, state } = useLeetCodeStats('soumyaranjanpadhi');
 
-  const isDone = state === 'done' || state === 'fresh';
-  const dsaValue = isDone && stats ? String(stats.solved) : null;
-  const dsaSublabel = isDone && stats
+  const isDone = state === 'done';
+  const dsaValue = stats ? String(stats.solved) : null;   // show whenever available
+  const dsaSublabel = stats
     ? `${stats.easy}E · ${stats.medium}M · ${stats.hard}H`
-    : state === 'waking' ? 'Waking API… please wait' : 'LeetCode · Live';
+    : state === 'loading' ? 'Fetching live…' : 'LeetCode · Live';
 
   return (
     <section className="py-16 relative overflow-hidden border-b border-borderSubtle">
