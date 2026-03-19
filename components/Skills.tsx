@@ -2,6 +2,7 @@ import React, { useRef } from 'react';
 import { motion } from 'framer-motion';
 import { SKILL_CATEGORIES } from '../constants';
 import { ChevronRight } from 'lucide-react';
+import { TiltCard } from './TiltCard';
 
 const ACCENT = [
   { from: 'rgba(61,219,255,0.18)',  border: 'rgba(61,219,255,0.28)',  icon: '#3DDBFF', chip: 'rgba(61,219,255,0.10)',  chipBorder: 'rgba(61,219,255,0.20)',  neon: '0 0 18px rgba(61,219,255,0.4)'  },
@@ -61,14 +62,18 @@ const SkillCard: React.FC<SkillCardProps> = ({ cat, col, idx }) => {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 22 }}
+      initial={{ opacity: 0, y: 24 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      transition={{ duration: 0.55, delay: idx * 0.07, ease: [0.16, 1, 0.3, 1] }}
-      whileHover={{ y: -5, transition: { duration: 0.2 } }}
-      className="group relative glass rounded-2xl p-6 shimmer-card overflow-hidden cursor-default flex flex-col gap-4"
-      style={{ border: '1px solid rgba(255,255,255,0.07)' }}
+      transition={{ duration: 0.8, delay: idx * 0.1, ease: [0.16, 1, 0.3, 1] }}
     >
+      <TiltCard intensity={10} className="h-full">
+      <div
+        className="group relative glass-focus glass-noise glass-highlight rounded-2xl p-6 shimmer-card overflow-hidden cursor-default flex flex-col gap-4 h-full"
+        style={{ border: '1px solid rgba(255,255,255,0.07)' }}
+      >
+        {/* Noise overlay */}
+        <div className="noise-overlay" />
       {/* Hover glow overlay */}
       <div
         className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-all duration-400 pointer-events-none"
@@ -144,12 +149,14 @@ const SkillCard: React.FC<SkillCardProps> = ({ cat, col, idx }) => {
         </div>
       </div>
 
-      {/* Scroll hint chevron — only visible when overflowing */}
-      <div className="flex items-center justify-end">
-        <span className="font-mono text-[9px] text-muted flex items-center gap-0.5 opacity-50">
-          scroll <ChevronRight size={10} />
-        </span>
+        {/* Scroll hint chevron — only visible when overflowing */}
+        <div className="flex items-center justify-end">
+          <span className="font-mono text-[9px] text-muted flex items-center gap-0.5 opacity-50">
+            scroll <ChevronRight size={10} />
+          </span>
+        </div>
       </div>
+      </TiltCard>
     </motion.div>
   );
 };

@@ -27,11 +27,13 @@ const LeetCodeCard: React.FC<{ link: typeof SOCIAL_LINKS[0]; idx: number }> = ({
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.55, delay: idx * 0.1, ease: [0.16, 1, 0.3, 1] }}
-      whileHover={{ scale: 1.05, y: -6 }}
+      whileHover={{ scale: 1.04, y: -8, transition: { type: 'spring', stiffness: 400, damping: 25 } }}
       whileTap={{ scale: 0.97 }}
-      className="group relative glass rounded-2xl p-6 flex flex-col items-center gap-4 cursor-pointer overflow-hidden shimmer-card"
+      className="group relative glass-focus glass-noise rounded-2xl p-6 flex flex-col items-center gap-4 cursor-pointer overflow-hidden shimmer-card glass-highlight"
       style={{ border: '1px solid rgba(255,255,255,0.07)' }}
     >
+      {/* Noise overlay */}
+      <div className="noise-overlay" />
       {/* Corner brackets on hover */}
       <div className="absolute top-2.5 left-2.5 w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
         style={{ borderTop: `1.5px solid ${meta.border}`, borderLeft: `1.5px solid ${meta.border}` }} />
@@ -115,11 +117,13 @@ const GenericCard: React.FC<{ link: typeof SOCIAL_LINKS[0]; idx: number }> = ({ 
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.55, delay: idx * 0.1, ease: [0.16, 1, 0.3, 1] }}
-      whileHover={{ scale: 1.05, y: -6 }}
+      whileHover={{ scale: 1.04, y: -8, transition: { type: 'spring', stiffness: 400, damping: 25 } }}
       whileTap={{ scale: 0.97 }}
-      className="group relative glass rounded-2xl p-6 flex flex-col items-center gap-4 cursor-pointer overflow-hidden shimmer-card"
+      className="group relative glass-focus glass-noise glass-highlight rounded-2xl p-6 flex flex-col items-center gap-4 cursor-pointer overflow-hidden shimmer-card"
       style={{ border: '1px solid rgba(255,255,255,0.07)' }}
     >
+      {/* Noise overlay */}
+      <div className="noise-overlay" />
       <div className="absolute top-2.5 left-2.5 w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
         style={{ borderTop: `1.5px solid ${meta.border}`, borderLeft: `1.5px solid ${meta.border}` }} />
       <div className="absolute bottom-2.5 right-2.5 w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
@@ -153,7 +157,8 @@ const GenericCard: React.FC<{ link: typeof SOCIAL_LINKS[0]; idx: number }> = ({ 
 // ── Section ───────────────────────────────────────────────────────────────
 export const SocialGrid: React.FC = () => (
   <section className="py-20 relative overflow-hidden border-b border-borderSubtle">
-    <div className="absolute top-0 right-0 w-96 h-96 bg-accentSec/10 rounded-full blur-[100px] pointer-events-none" />
+    <div className="absolute top-0 right-0 w-96 h-96 bg-accentSec/10 rounded-full blur-[100px] pointer-events-none animate-breathe" />
+    <div className="absolute bottom-0 left-1/4 w-64 h-64 bg-accent/6 rounded-full blur-[80px] pointer-events-none animate-breathe" style={{ animationDelay: '4s' }} />
     <div className="relative z-10 w-full">
       <motion.div
         initial={{ opacity: 0, y: 12 }}
