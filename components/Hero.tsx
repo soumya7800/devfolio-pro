@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight, Download, MapPin, Wifi, ChevronRight } from 'lucide-react';
 import { PERSONAL_INFO } from '../constants';
+import { TiltCard } from './TiltCard';
+import { MagneticButton } from './MagneticButton';
 
 const ROLES = [
   "Java Backend Engineer",
@@ -170,30 +172,23 @@ export const Hero: React.FC = () => {
               transition={{ delay: 0.85 }}
               className="flex flex-wrap gap-4 mt-2"
             >
-              <motion.a
+              <MagneticButton
                 href="#projects"
-                onClick={(e) => { e.preventDefault(); document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' }); }}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.97 }}
+                onClick={(e: React.MouseEvent) => { e.preventDefault(); document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' }); }}
                 className="group btn-primary text-sm font-bold"
-                style={{ boxShadow: '0 0 0 rgba(61,219,255,0)' }}
-                onMouseEnter={e => (e.currentTarget.style.boxShadow = '0 0 30px rgba(61,219,255,0.3)')}
-                onMouseLeave={e => (e.currentTarget.style.boxShadow = '0 0 0 rgba(61,219,255,0)')}
               >
                 View Projects
                 <ArrowRight size={15} className="group-hover:translate-x-1 transition-transform" />
-              </motion.a>
-              <motion.a
+              </MagneticButton>
+              <MagneticButton
                 href="/Mine_Resume.pdf"
                 target="_blank"
                 rel="noopener noreferrer"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.97 }}
                 className="btn-secondary text-sm font-bold"
               >
                 <Download size={15} />
                 Resume
-              </motion.a>
+              </MagneticButton>
             </motion.div>
           </motion.div>
 
@@ -219,7 +214,7 @@ export const Hero: React.FC = () => {
             />
 
             {/* Main profile card */}
-            <div className="relative w-full max-w-[340px]">
+            <TiltCard className="relative w-full max-w-[340px]" intensity={12}>
               {/* Gradient border glow ring */}
               <div className="absolute -inset-[1.5px] rounded-[26px] pointer-events-none z-0"
                 style={{ background: 'linear-gradient(135deg, rgba(61,219,255,0.4) 0%, rgba(139,111,255,0.25) 50%, rgba(61,219,255,0.15) 100%)' }} />
@@ -280,7 +275,7 @@ export const Hero: React.FC = () => {
 
                 </div>
               </div>
-            </div>
+            </TiltCard>
           </motion.div>
         </div>
       </div>

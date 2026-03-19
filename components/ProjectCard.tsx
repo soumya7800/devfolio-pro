@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ExternalLink, Github, BookOpen, FolderGit2 } from 'lucide-react';
 import { Project } from '../types';
+import { TiltCard } from './TiltCard';
 
 interface ProjectCardProps {
   project: Project;
@@ -16,14 +17,16 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project, index }) => {
       initial={{ opacity: 0, y: 24 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-50px' }}
-      transition={{ duration: 0.6, delay: index * 0.1, ease: [0.16, 1, 0.3, 1] }}
+      transition={{ duration: 0.8, delay: index * 0.2, ease: [0.16, 1, 0.3, 1] }}
       whileHover={{ y: -8, scale: 1.02, transition: { type: 'spring', stiffness: 400, damping: 25 } }}
       whileTap={{ scale: 0.98 }}
       onHoverStart={() => setHovered(true)}
       onHoverEnd={() => setHovered(false)}
-      className="group relative glass rounded-2xl overflow-hidden shimmer-card glass-noise flex flex-col h-full cursor-default"
-      style={{ border: '1px solid rgba(255,255,255,0.07)' }}
+      className="group relative rounded-2xl h-full cursor-default"
+      layout
     >
+      <TiltCard intensity={8} className="relative glass rounded-2xl overflow-hidden shimmer-card glass-noise flex flex-col h-full w-full" style={{ border: '1px solid rgba(255,255,255,0.07)' }}>
+
       {/* Hover gradient border */}
       <motion.div
         initial={false}
@@ -90,18 +93,17 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project, index }) => {
             </div>
           </div>
 
-          {/* Hover actions - slide up reveal */}
-          <div className="flex flex-col gap-2">
+          <motion.div layout className="flex flex-col gap-2 overflow-hidden">
             <AnimatePresence>
               {hovered && (
-                <motion.p
-                  initial={{ opacity: 0, y: 6 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: 6 }}
-                  className="font-mono text-[9px] text-muted tracking-widest uppercase mb-1"
+                <motion.div
+                  initial={{ opacity: 0, height: 0, marginBottom: 0 }}
+                  animate={{ opacity: 1, height: 'auto', marginBottom: 4 }}
+                  exit={{ opacity: 0, height: 0, marginBottom: 0 }}
+                  className="font-mono text-[9px] text-muted tracking-widest uppercase"
                 >
                   Quick Actions
-                </motion.p>
+                </motion.div>
               )}
             </AnimatePresence>
 
@@ -155,9 +157,10 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project, index }) => {
               <BookOpen size={13} />
               Case Study
             </motion.button>
-          </div>
+          </motion.div>
         </div>
       </div>
+      </TiltCard>
     </motion.div>
   );
 };

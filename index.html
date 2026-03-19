@@ -385,6 +385,10 @@
     }
 
     /* Hex grid background */
+    @keyframes gridPan {
+      from { stroke-dashoffset: 0; background-position: -1px -1px, -1px -1px, -0.5px -0.5px, -0.5px -0.5px; }
+      to { background-position: -121px -121px, -121px -121px, -30.5px -30.5px, -30.5px -30.5px; }
+    }
     .hex-grid {
       background-image:
         linear-gradient(rgba(61,219,255,0.04) 1px, transparent 1px),
@@ -393,6 +397,7 @@
         linear-gradient(90deg, rgba(61,219,255,0.02) 1px, transparent 1px);
       background-size: 120px 120px, 120px 120px, 30px 30px, 30px 30px;
       background-position: -1px -1px, -1px -1px, -0.5px -0.5px, -0.5px -0.5px;
+      animation: gridPan 60s linear infinite;
     }
 
     /* Corner bracket decoration */

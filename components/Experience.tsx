@@ -76,7 +76,7 @@ export const Experience: React.FC = () => {
                 initial={{ opacity: 0, x: -16 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true, margin: '-60px' }}
-                transition={{ duration: 0.6, delay: index * 0.15, ease: [0.16, 1, 0.3, 1] }}
+                transition={{ duration: 0.8, delay: index * 0.25, ease: [0.16, 1, 0.3, 1] }}
                 className="relative flex gap-8 md:gap-12 pl-16 md:pl-20 group"
               >
                 {/* Timeline node */}

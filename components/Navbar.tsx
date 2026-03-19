@@ -103,7 +103,7 @@ export const Navbar: React.FC = () => {
                       border: '1px solid rgba(61,219,255,0.25)',
                       boxShadow: '0 0 12px rgba(61,219,255,0.15)',
                     }}
-                    transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                    transition={{ type: 'spring', stiffness: 500, damping: 32, mass: 0.5 }}
                   />
                 )}
                 <span className="relative z-10 flex items-center gap-1.5">

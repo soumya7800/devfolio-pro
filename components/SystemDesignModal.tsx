@@ -34,10 +34,10 @@ export const SystemDesignModal: React.FC<SystemDesignModalProps> = ({ isOpen, on
 
           {/* Modal */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.94, y: 24 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.94, y: 16 }}
-            transition={{ duration: 0.38, ease: [0.16, 1, 0.3, 1] }}
+            initial={{ opacity: 0, scale: 0.9, y: 40, rotateX: 10 }}
+            animate={{ opacity: 1, scale: 1, y: 0, rotateX: 0 }}
+            exit={{ opacity: 0, scale: 0.9, y: 20, rotateX: -5 }}
+            transition={{ type: 'spring', damping: 25, stiffness: 300, mass: 0.8 }}
             className="fixed inset-0 z-[101] flex items-center justify-center pointer-events-none p-4 sm:p-8"
           >
             <div

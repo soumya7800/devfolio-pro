@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Layers, ArrowRight, Server, Database, Wifi } from 'lucide-react';
 import { CASE_STUDIES } from '../constants';
 import { SystemDesignModal } from './SystemDesignModal';
+import { TiltCard } from './TiltCard';
 import { CaseStudy } from '../types';
 
 const icons = [Server, Database, Wifi];
@@ -44,13 +45,11 @@ export const SystemDesign: React.FC = () => {
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: idx * 0.1, ease: [0.16, 1, 0.3, 1] }}
-                whileHover={{ y: -6, transition: { duration: 0.22 } }}
-                whileTap={{ scale: 0.98 }}
+                transition={{ duration: 0.8, delay: idx * 0.2, ease: [0.16, 1, 0.3, 1] }}
                 onClick={() => setSelectedStudy(study)}
-                className="group relative glass rounded-2xl overflow-hidden shimmer-card cursor-pointer flex flex-col h-full"
-                style={{ border: '1px solid rgba(255,255,255,0.07)' }}
+                className="cursor-pointer h-full"
               >
+                <TiltCard intensity={10} className="group relative glass rounded-2xl overflow-hidden shimmer-card glass-noise flex flex-col h-full w-full" style={{ border: '1px solid rgba(255,255,255,0.07)' }}>
                 {/* Hover border glow */}
                 <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-all duration-400 pointer-events-none"
                   style={{ border: '1px solid rgba(139,111,255,0.3)', boxShadow: '0 0 40px rgba(139,111,255,0.1)' }} />
@@ -95,6 +94,7 @@ export const SystemDesign: React.FC = () => {
                   <span className="font-sans text-xs font-semibold">Deep Dive</span>
                   <ArrowRight size={14} className="group-hover:translate-x-1.5 transition-transform" />
                 </div>
+                </TiltCard>
               </motion.div>
             );
           })}
