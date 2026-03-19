@@ -123,17 +123,11 @@ export const Navbar: React.FC = () => {
           {/* Hire Me */}
           <a
             href="mailto:soumyarnpadhi1@gmail.com"
-            className="flex items-center gap-1.5 ml-1 px-4 py-1.5 rounded-full font-sans text-[11px] font-bold transition-all duration-250 relative overflow-hidden group"
-            style={{
-              background: 'linear-gradient(135deg, rgba(61,219,255,0.12), rgba(139,111,255,0.12))',
-              border: '1px solid rgba(61,219,255,0.3)',
-              color: '#3DDBFF',
-            }}
-            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.boxShadow = '0 0 20px rgba(61,219,255,0.25)'; }}
-            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.boxShadow = 'none'; }}
+            className="flex items-center gap-1.5 ml-1 px-4 py-1.5 rounded-full font-sans text-[11px] font-bold transition-transform hover:scale-105 duration-250 spin-border group"
+            style={{ color: '#3DDBFF', boxShadow: '0 0 15px rgba(61,219,255,0.15)' }}
           >
-            <div className="absolute inset-0 bg-gradient-to-r from-accent/0 via-accent/8 to-accent/0 -translate-x-full group-hover:translate-x-full transition-transform duration-600 pointer-events-none" />
-            <Mail size={11} />
+            <div className="absolute inset-0 bg-gradient-to-r from-accent/0 via-accent/10 to-accent/0 -translate-x-full group-hover:translate-x-full transition-transform duration-600 pointer-events-none z-0" />
+            <Mail size={11} className="relative z-10" />
             <span className="relative z-10">Hire Me</span>
           </a>
         </div>
@@ -215,15 +209,11 @@ export const Navbar: React.FC = () => {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: navLinks.length * 0.06 + 0.1 }}
-                className="mt-3 flex items-center justify-center gap-2 px-5 py-4 rounded-2xl font-bold text-base"
-                style={{
-                  background: 'linear-gradient(135deg, rgba(61,219,255,0.12), rgba(139,111,255,0.12))',
-                  border: '1px solid rgba(61,219,255,0.25)',
-                  color: '#3DDBFF',
-                }}
+                className="mt-3 flex items-center justify-center gap-2 px-5 py-4 rounded-2xl font-bold text-base spin-border transition-transform hover:scale-[1.02]"
+                style={{ color: '#3DDBFF', boxShadow: '0 0 20px rgba(61,219,255,0.15)' }}
               >
-                <Mail size={16} />
-                Get In Touch
+                <Mail size={16} className="relative z-10" />
+                <span className="relative z-10">Get In Touch</span>
               </motion.a>
             </div>
           </motion.div>

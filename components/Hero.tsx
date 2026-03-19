@@ -57,9 +57,11 @@ export const Hero: React.FC = () => {
       <div className="absolute inset-0 scan-overlay opacity-70 pointer-events-none" />
 
       {/* Animated Orbs */}
-      <div className="orb orb-1 absolute -top-32 -left-48" />
-      <div className="orb orb-2 absolute top-1/2 -right-64" />
-      <div className="orb orb-3 absolute bottom-0 left-1/3" />
+      <div className="absolute inset-0 pointer-events-none overflow-hidden sm:overflow-visible">
+        <div className="animate-breathe"><div className="orb orb-1 absolute -top-32 -left-48" /></div>
+        <div className="animate-breathe" style={{ animationDelay: '2.5s' }}><div className="orb orb-2 absolute top-1/2 -right-64" /></div>
+        <div className="animate-breathe" style={{ animationDelay: '5s' }}><div className="orb orb-3 absolute bottom-0 left-1/3" /></div>
+      </div>
 
       {/* Radial vignette to focus center */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_70%_at_50%_50%,transparent_40%,rgba(7,11,20,0.6)_100%)] pointer-events-none" />
@@ -222,7 +224,7 @@ export const Hero: React.FC = () => {
               <div className="absolute -inset-[1.5px] rounded-[26px] pointer-events-none z-0"
                 style={{ background: 'linear-gradient(135deg, rgba(61,219,255,0.4) 0%, rgba(139,111,255,0.25) 50%, rgba(61,219,255,0.15) 100%)' }} />
 
-              <div className="relative z-10 rounded-[24px] overflow-hidden shimmer-card"
+              <div className="relative z-10 rounded-[24px] overflow-hidden shimmer-card glass-noise"
                 style={{ background: 'rgba(10,16,32,0.8)', backdropFilter: 'blur(30px)' }}>
 
                 {/* Futuristic HUD top bar */}

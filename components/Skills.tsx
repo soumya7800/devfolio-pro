@@ -13,8 +13,8 @@ export const Skills: React.FC = () => {
   return (
     <section id="skills" className="py-24 relative overflow-hidden border-b border-borderSubtle scroll-mt-24">
       {/* Ambient glows */}
-      <div className="absolute top-0 right-1/4 w-80 h-80 bg-accent/8 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-72 h-72 bg-accentSec/8 rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute top-0 right-1/4 w-80 h-80 bg-accent/8 rounded-full blur-[120px] pointer-events-none animate-breathe" />
+      <div className="absolute bottom-0 left-0 w-72 h-72 bg-accentSec/8 rounded-full blur-[100px] pointer-events-none animate-breathe" style={{ animationDelay: '3s' }} />
 
       <div className="relative z-10 w-full">
         {/* Header */}

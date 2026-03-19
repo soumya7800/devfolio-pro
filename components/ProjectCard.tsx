@@ -17,11 +17,11 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project, index }) => {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-50px' }}
       transition={{ duration: 0.6, delay: index * 0.1, ease: [0.16, 1, 0.3, 1] }}
-      whileHover={{ y: -6, transition: { duration: 0.25, ease: [0.16, 1, 0.3, 1] } }}
-      whileTap={{ scale: 0.99 }}
+      whileHover={{ y: -8, scale: 1.02, transition: { type: 'spring', stiffness: 400, damping: 25 } }}
+      whileTap={{ scale: 0.98 }}
       onHoverStart={() => setHovered(true)}
       onHoverEnd={() => setHovered(false)}
-      className="group relative glass rounded-2xl overflow-hidden shimmer-card flex flex-col h-full cursor-default"
+      className="group relative glass rounded-2xl overflow-hidden shimmer-card glass-noise flex flex-col h-full cursor-default"
       style={{ border: '1px solid rgba(255,255,255,0.07)' }}
     >
       {/* Hover gradient border */}
@@ -133,13 +133,12 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project, index }) => {
                 whileHover={{ x: 3 }}
                 whileTap={{ scale: 0.97 }}
                 className="flex items-center justify-between w-full px-4 py-2.5 rounded-xl
-                  bg-gradient-to-r from-accent/15 to-accentSec/15
-                  border border-accent/30 hover:border-accent/55 hover:shadow-glow-sm
-                  font-sans text-xs font-bold text-accent
-                  transition-all duration-200"
+                  spin-border transition-transform hover:scale-105 duration-200
+                  font-sans text-xs font-bold text-accent"
+                style={{ boxShadow: '0 0 15px rgba(61,219,255,0.1)' }}
                 onClick={(e) => e.stopPropagation()}
               >
-                <span className="flex items-center gap-2">
+                <span className="flex items-center gap-2 relative z-10">
                   <ExternalLink size={13} />
                   Live Demo
                 </span>

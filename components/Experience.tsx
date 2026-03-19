@@ -64,7 +64,6 @@ export const Experience: React.FC = () => {
           <div className="absolute left-6 md:left-8 top-0 bottom-0 w-px">
             <div className="absolute inset-0 bg-borderSubtle" />
             <motion.div
-              style={{ scaleY, transformOrigin: 'top' }}
               className="absolute inset-0"
               style={{ background: 'linear-gradient(to bottom, #3DDBFF, #8B6FFF, #3DDBFF)', boxShadow: '0 0 12px rgba(61,219,255,0.4)', transformOrigin: 'top', scaleY }}
             />
