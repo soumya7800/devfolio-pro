@@ -121,13 +121,9 @@ export const Achievements: React.FC = () => {
               <div className="md:col-span-2 relative flex items-center justify-center p-8 border-t md:border-t-0 md:border-l border-borderSubtle overflow-hidden bg-surfaceDeep/40 min-h-[280px]">
                 {/* Background glow blob */}
                 <div className="absolute inset-0 bg-gradient-to-br from-accent/6 to-accentSec/6 pointer-events-none" />
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-warning/10 rounded-full blur-[60px] animate-glow-pulse pointer-events-none" />
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-warning/10 rounded-full blur-[60px] pointer-events-none" />
 
-                {/* Decorative ring */}
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-56 h-56 rounded-full border border-accent/10 animate-spin-slow pointer-events-none" />
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-40 h-40 rounded-full border border-dashed border-accentSec/10 animate-spin-rev pointer-events-none" />
-                {/* Second outer ring */}
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 rounded-full border border-warning/8 animate-spin-slow pointer-events-none" style={{ animationDuration: '18s' }} />
+
 
                 {/* Badge image */}
                 <div
