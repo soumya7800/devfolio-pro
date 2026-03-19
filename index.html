@@ -437,6 +437,166 @@
 
     /* Glow text selection */
     ::selection { background: rgba(61,219,255,0.25); color: #fff; }
+
+    /* ─── Advanced Aquamorphic 2.0 Additions ─────────────────────────── */
+
+    /* SVG Noise Texture (injected inline as data URI) */
+    .noise-overlay {
+      position: absolute; inset: 0; pointer-events: none; border-radius: inherit;
+      opacity: 0.035;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.95' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+      background-size: 200px 200px;
+    }
+
+    /* Focus Glass card — deeper more luminous version of glass */
+    .glass-focus {
+      background: rgba(10, 16, 32, 0.72) !important;
+      backdrop-filter: blur(40px) saturate(180%) !important;
+      -webkit-backdrop-filter: blur(40px) saturate(180%) !important;
+    }
+    .glass-focus::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.04) 0%, transparent 60%);
+      pointer-events: none; border-radius: inherit;
+    }
+
+    /* Depth layer system */
+    .depth-1 { transform: translateZ(0px);   z-index: 1; }
+    .depth-2 { transform: translateZ(4px);   z-index: 2; }
+    .depth-3 { transform: translateZ(8px);   z-index: 3; }
+
+    /* Ambient gradient motion */
+    @keyframes ambientGrad {
+      0%   { background-position: 0% 50%; }
+      50%  { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    .ambient-gradient {
+      background-size: 300% 300%;
+      animation: ambientGrad 20s ease infinite;
+    }
+
+    /* Glow number emphasis */
+    .glow-number {
+      text-shadow:
+        0 0 20px currentColor,
+        0 0 60px currentColor,
+        0 0 120px currentColor;
+      filter: brightness(1.15);
+    }
+
+    /* Glass/Solid Hybrid button */
+    .btn-glass-hybrid {
+      position: relative;
+      background: linear-gradient(135deg, rgba(61,219,255,0.14) 0%, rgba(61,219,255,0.07) 100%);
+      border: 1px solid rgba(61,219,255,0.38);
+      backdrop-filter: blur(12px);
+      color: #3DDBFF;
+      overflow: hidden;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .btn-glass-hybrid:hover {
+      background: linear-gradient(135deg, rgba(61,219,255,0.22) 0%, rgba(61,219,255,0.12) 100%);
+      box-shadow: 0 0 30px rgba(61,219,255,0.3), inset 0 0 15px rgba(61,219,255,0.05);
+      border-color: rgba(61,219,255,0.6);
+    }
+    .btn-glass-hybrid::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.08) 50%, transparent 60%);
+      animation: shimmer 2.5s linear infinite;
+      pointer-events: none;
+    }
+
+    /* Stagger reveal base class */
+    .stagger-child > * {
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 0.6s cubic-bezier(0.16,1,0.3,1), transform 0.6s cubic-bezier(0.16,1,0.3,1);
+    }
+    .stagger-child.in-view > *:nth-child(1) { opacity:1; transform:none; transition-delay:0s; }
+    .stagger-child.in-view > *:nth-child(2) { opacity:1; transform:none; transition-delay:0.08s; }
+    .stagger-child.in-view > *:nth-child(3) { opacity:1; transform:none; transition-delay:0.16s; }
+    .stagger-child.in-view > *:nth-child(4) { opacity:1; transform:none; transition-delay:0.24s; }
+
+    /* Glass highlight sweep — primary CTA card glow on hover */
+    .glass-highlight {
+      position: relative;
+      overflow: hidden;
+    }
+    .glass-highlight::before {
+      content: '';
+      position: absolute;
+      top: -50%; left: -60%;
+      width: 60%; height: 200%;
+      background: linear-gradient(120deg, transparent, rgba(61,219,255,0.07), transparent);
+      transform: skewX(-20deg);
+      transition: left 0.55s cubic-bezier(0.16,1,0.3,1);
+      pointer-events: none;
+      z-index: 5;
+    }
+    .glass-highlight:hover::before { left: 120%; }
+
+    /* Breathe animation (slow) */
+    @keyframes breathe {
+      0%, 100% { transform: scale(1);   opacity: 0.6; }
+      50%       { transform: scale(1.12); opacity: 1;   }
+    }
+    .animate-breathe { animation: breathe 8s ease-in-out infinite; }
+
+    /* Tech Glass chip — secondary accent tinted badge */
+    .chip-tech {
+      display: inline-flex;
+      align-items: center; gap: 4px;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 0.68rem; font-weight: 700;
+      font-family: 'Space Grotesk', monospace;
+      letter-spacing: 0.08em;
+      background: rgba(139,111,255,0.08);
+      border: 1px solid rgba(139,111,255,0.22);
+      color: #8B6FFF;
+      transition: background 0.2s, border-color 0.2s, box-shadow 0.2s;
+    }
+    .chip-tech:hover {
+      background: rgba(139,111,255,0.16);
+      border-color: rgba(139,111,255,0.4);
+      box-shadow: 0 0 12px rgba(139,111,255,0.25);
+    }
+
+    /* Enhanced spin-border — conic gradient orbit on interactive buttons */
+    @keyframes spinBorder {
+      to { --spin-angle: 360deg; }
+    }
+    @property --spin-angle {
+      syntax: '<angle>';
+      inherits: false;
+      initial-value: 0deg;
+    }
+    .spin-border {
+      position: relative;
+      border-radius: 9999px;
+      overflow: hidden;
+    }
+    .spin-border::before {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      border-radius: inherit;
+      background: conic-gradient(from var(--spin-angle), transparent 0%, #3DDBFF 20%, transparent 40%, #8B6FFF 60%, transparent 80%);
+      animation: spinBorder 2.5s linear infinite;
+      z-index: -1;
+    }
+    .spin-border::after {
+      content: '';
+      position: absolute;
+      inset: 1.5px;
+      border-radius: inherit;
+      background: #070B14;
+      z-index: -1;
+    }
   </style>
   <script type="importmap">
 {

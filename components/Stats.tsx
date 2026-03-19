@@ -58,11 +58,13 @@ const StatCard: React.FC<StatProps> = ({
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      transition={{ duration: 0.55, delay, ease: [0.16, 1, 0.3, 1] }}
-      whileHover={{ y: -6, transition: { duration: 0.2 } }}
-      className="group relative glass rounded-2xl px-6 py-8 flex flex-col gap-2 overflow-hidden shimmer-card h-full"
+      transition={{ duration: 0.7, delay, ease: [0.16, 1, 0.3, 1] }}
+      whileHover={{ y: -8, scale: 1.03, transition: { type: 'spring', stiffness: 400, damping: 25 } }}
+      className="group relative glass-focus rounded-2xl px-6 py-8 flex flex-col gap-2 overflow-hidden shimmer-card glass-noise glass-highlight h-full"
       style={{ border: '1px solid rgba(255,255,255,0.07)' }}
     >
+      {/* Noise overlay */}
+      <div className="noise-overlay" />
       {/* Top neon accent line */}
       <div
         className="absolute top-0 left-4 right-4 h-px opacity-0 group-hover:opacity-100 transition-all duration-400"
@@ -92,13 +94,13 @@ const StatCard: React.FC<StatProps> = ({
       {/* Value */}
       <motion.span
         key={displayed}
-        initial={animate ? { opacity: 0 } : undefined}
-        animate={animate ? { opacity: 1 } : undefined}
-        className="font-sans font-black leading-none tabular-nums"
+        initial={animate ? { opacity: 0, scale: 0.8 } : undefined}
+        animate={animate ? { opacity: 1, scale: 1 } : undefined}
+        transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+        className="font-sans font-black leading-none tabular-nums glow-number"
         style={{
           fontSize: 'clamp(2.4rem, 5vw, 3.4rem)',
           color,
-          textShadow: neon,
         }}
       >
         {displayed}

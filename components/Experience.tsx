@@ -95,9 +95,11 @@ export const Experience: React.FC = () => {
                 {/* Content card */}
                 <div className="w-full">
                   <div
-                    className="group/card glass rounded-2xl p-6 md:p-8 shimmer-card overflow-hidden transition-all duration-400"
+                    className="group/card glass-focus glass-highlight glass-noise rounded-2xl p-6 md:p-8 shimmer-card overflow-hidden transition-all duration-400 relative"
                     style={{ border: exp.active ? '1px solid rgba(61,219,255,0.2)' : '1px solid rgba(255,255,255,0.07)' }}
                   >
+                    {/* Noise overlay on card */}
+                    <div className="noise-overlay" />
                     {/* Top gradient line */}
                     <div className={`absolute top-0 left-0 right-0 h-px opacity-0 group-hover/card:opacity-100 transition-opacity duration-400 ${
                       exp.active ? 'bg-gradient-to-r from-accent via-accentSec to-transparent' : 'bg-gradient-to-r from-accentSec via-accent/50 to-transparent'
@@ -148,7 +150,7 @@ export const Experience: React.FC = () => {
                     {/* Tech chips */}
                     <div className="flex flex-wrap gap-2 pt-4 border-t border-borderSubtle">
                       {exp.tech.map((t) => (
-                        <span key={t} className="chip-sec chip text-[10px]">{t}</span>
+                        <span key={t} className="chip-tech text-[10px]">{t}</span>
                       ))}
                     </div>
                   </div>
