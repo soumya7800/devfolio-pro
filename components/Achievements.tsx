@@ -43,22 +43,22 @@ export const Achievements: React.FC = () => {
             <TiltCard
               intensity={6}
               className="group relative glass-focus glass-highlight glass-noise rounded-xl overflow-hidden shimmer-card w-full h-full flex flex-col"
-              style={{ border: '1px solid rgba(61,219,255,0.16)', boxShadow: '0 0 60px rgba(61,219,255,0.06), 0 30px 80px rgba(0,0,0,0.4)' }}
+              style={{ border: '1px solid rgba(52,211,153,0.22)', boxShadow: '0 0 40px rgba(16,185,129,0.08), 0 20px 60px rgba(0,0,0,0.4)' }}
             >
               <div className="noise-overlay" />
-              <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-accent to-accentSec opacity-0 group-hover:opacity-100 transition-opacity duration-400 pointer-events-none z-10" />
-              <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-accent/4 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-xl" />
-              <div className="absolute top-0 right-0 w-32 h-32 bg-warning/6 rounded-full blur-[60px] pointer-events-none" />
-              <div className="absolute bottom-0 left-0 w-28 h-28 bg-accent/6 rounded-full blur-[50px] pointer-events-none" />
+              <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-emerald-400 to-green-400 opacity-0 group-hover:opacity-100 transition-opacity duration-400 pointer-events-none z-10" />
+              <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-emerald-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-xl" />
+              <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/8 rounded-full blur-[60px] pointer-events-none" />
+              <div className="absolute bottom-0 left-0 w-28 h-28 bg-green-500/6 rounded-full blur-[50px] pointer-events-none" />
 
               {/* Badge visual — top */}
               <div className="relative flex items-center justify-center py-6 bg-surfaceDeep/40 border-b border-borderSubtle overflow-hidden min-h-[160px]">
-                <div className="absolute inset-0 bg-gradient-to-br from-accent/6 to-accentSec/6 pointer-events-none" />
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-28 h-28 bg-warning/10 rounded-full blur-[50px] pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/8 to-green-500/4 pointer-events-none" />
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-28 h-28 bg-emerald-400/12 rounded-full blur-[50px] pointer-events-none" />
 
                 <div
                   className="relative z-10 w-24 h-24 overflow-hidden flex items-center justify-center group-hover:scale-105 transition-transform duration-500"
-                  style={{ clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)', boxShadow: '0 0 30px rgba(61,219,255,0.15)' }}
+                  style={{ clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)', boxShadow: '0 0 30px rgba(52,211,153,0.2)' }}
                 >
                   <img
                     src="/badges/Screenshot 2026-02-20 120340.png"
@@ -70,17 +70,17 @@ export const Achievements: React.FC = () => {
                 </div>
 
                 {[{ top: '14%', left: '10%' }, { top: '16%', right: '10%' }, { bottom: '12%', left: '8%' }].map((style, i) => (
-                  <Star key={i} size={8} className="absolute text-warning/40 fill-warning/20 animate-glow-pulse"
-                    style={{ ...style, animationDelay: `${i * 0.4}s` } as React.CSSProperties} />
+                  <Star key={i} size={8} className="absolute animate-glow-pulse"
+                    style={{ ...style, color: 'rgba(52,211,153,0.55)', fill: 'rgba(52,211,153,0.2)', animationDelay: `${i * 0.4}s` } as React.CSSProperties} />
                 ))}
               </div>
 
               {/* Content */}
               <div className="flex flex-col gap-3.5 p-5 relative z-10 flex-1">
-                <div className="flex items-center gap-1.5 self-start px-2.5 py-1 rounded-full bg-warning/10 border border-warning/25"
-                  style={{ boxShadow: '0 0 14px rgba(255,170,0,0.08)' }}>
-                  <Flame size={10} className="text-warning" />
-                  <span className="font-mono text-[9px] font-bold uppercase tracking-widest text-warning">Verified Milestone</span>
+                <div className="flex items-center gap-1.5 self-start px-2.5 py-1 rounded-full border"
+                  style={{ background: 'rgba(52,211,153,0.1)', borderColor: 'rgba(52,211,153,0.3)', boxShadow: '0 0 14px rgba(52,211,153,0.1)' }}>
+                  <Flame size={10} style={{ color: '#34d399' }} />
+                  <span className="font-mono text-[9px] font-bold uppercase tracking-widest" style={{ color: '#34d399' }}>Verified Milestone</span>
                 </div>
 
                 <div className="flex flex-col">
@@ -90,17 +90,17 @@ export const Achievements: React.FC = () => {
                     viewport={{ once: true }}
                     transition={{ duration: 1, delay: 0.3 }}
                     className="font-sans font-black leading-none glow-number"
-                    style={{ fontSize: 'clamp(2.8rem, 7vw, 4rem)', color: '#3DDBFF' }}
+                    style={{ fontSize: 'clamp(2.8rem, 7vw, 4rem)', color: '#34d399' }}
                   >
                     50
                   </motion.span>
-                  <span className="font-mono text-[10px] text-muted tracking-widest uppercase mt-0.5 border-l-2 border-accent/40 pl-2">
+                  <span className="font-mono text-[10px] text-muted tracking-widest uppercase mt-0.5 pl-2" style={{ borderLeft: '2px solid rgba(52,211,153,0.4)' }}>
                     Day Problem Solving Streak
                   </span>
                 </div>
 
                 <div>
-                  <h3 className="font-sans font-black text-base text-white mb-1 group-hover:text-gradient-accent transition-all">
+                  <h3 className="font-sans font-black text-base text-white mb-1 transition-colors duration-300" onMouseEnter={e => (e.currentTarget.style.color = '#34d399')} onMouseLeave={e => (e.currentTarget.style.color = '')}>
                     LeetCode Consistent Learner
                   </h3>
                   <p className="font-body text-xs text-secondary leading-relaxed">
@@ -112,7 +112,7 @@ export const Achievements: React.FC = () => {
                   {miniStats.map(([val, label], i) => (
                     <motion.div key={label} initial={{ opacity: 0, y: 8 }} whileInView={{ opacity: 1, y: 0 }}
                       viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.4 + i * 0.08 }} className="flex flex-col">
-                      <span className="font-sans font-black text-sm text-accent glow-number">{val}</span>
+                      <span className="font-sans font-black text-sm glow-number" style={{ color: '#34d399' }}>{val}</span>
                       <span className="font-mono text-[8px] text-muted uppercase tracking-widest">{label}</span>
                     </motion.div>
                   ))}
@@ -123,6 +123,7 @@ export const Achievements: React.FC = () => {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-1.5 self-start btn-glass-hybrid px-4 py-2 rounded-lg font-bold text-xs mt-auto"
+                  style={{ background: 'linear-gradient(135deg, #059669, #34d399)', color: '#fff', border: '1px solid rgba(52,211,153,0.5)', boxShadow: '0 0 20px rgba(5,150,105,0.35)' }}
                 >
                   <Trophy size={12} className="relative z-10" />
                   <span className="relative z-10">View Record</span>
@@ -143,24 +144,24 @@ export const Achievements: React.FC = () => {
             <TiltCard
               intensity={6}
               className="group relative glass-focus glass-highlight glass-noise rounded-xl overflow-hidden shimmer-card w-full h-full flex flex-col"
-              style={{ border: '1px solid rgba(167,139,250,0.18)', boxShadow: '0 0 40px rgba(167,139,250,0.07), 0 20px 60px rgba(0,0,0,0.4)' }}
+              style={{ border: '1px solid rgba(56,189,248,0.22)', boxShadow: '0 0 40px rgba(14,165,233,0.08), 0 20px 60px rgba(0,0,0,0.4)' }}
             >
               <div className="noise-overlay" />
-              <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-violet-400 to-purple-400 opacity-0 group-hover:opacity-100 transition-opacity duration-400 pointer-events-none z-10" />
-              <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-violet-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-xl" />
-              <div className="absolute top-0 right-0 w-32 h-32 bg-violet-500/8 rounded-full blur-[60px] pointer-events-none" />
-              <div className="absolute bottom-0 left-0 w-28 h-28 bg-purple-500/6 rounded-full blur-[50px] pointer-events-none" />
+              <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-sky-400 to-cyan-400 opacity-0 group-hover:opacity-100 transition-opacity duration-400 pointer-events-none z-10" />
+              <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-sky-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-xl" />
+              <div className="absolute top-0 right-0 w-32 h-32 bg-sky-500/8 rounded-full blur-[60px] pointer-events-none" />
+              <div className="absolute bottom-0 left-0 w-28 h-28 bg-cyan-500/6 rounded-full blur-[50px] pointer-events-none" />
 
               {/* Badge visual — top */}
               <div className="relative flex items-center justify-center py-6 border-b border-borderSubtle overflow-hidden min-h-[160px]"
-                style={{ background: 'rgba(15,10,30,0.4)' }}>
-                <div className="absolute inset-0 bg-gradient-to-br from-violet-500/6 to-purple-500/4 pointer-events-none" />
+                style={{ background: 'rgba(8,16,30,0.4)' }}>
+                <div className="absolute inset-0 bg-gradient-to-br from-sky-500/6 to-cyan-500/4 pointer-events-none" />
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-28 h-28 rounded-full blur-[50px] pointer-events-none"
-                  style={{ background: 'rgba(167,139,250,0.14)' }} />
+                  style={{ background: 'rgba(56,189,248,0.14)' }} />
 
                 <div
                   className="relative z-10 w-24 h-24 overflow-hidden flex items-center justify-center group-hover:scale-105 transition-transform duration-500 rounded-full"
-                  style={{ boxShadow: '0 0 30px rgba(167,139,250,0.2)' }}
+                  style={{ boxShadow: '0 0 30px rgba(56,189,248,0.25)' }}
                 >
                   <img
                     src="/badges/leetcode 75.png"
@@ -173,16 +174,16 @@ export const Achievements: React.FC = () => {
 
                 {[{ top: '14%', left: '10%' }, { top: '16%', right: '10%' }, { bottom: '12%', left: '8%' }, { bottom: '16%', right: '12%' }].map((style, i) => (
                   <Star key={i} size={8} className="absolute animate-glow-pulse"
-                    style={{ ...style, color: 'rgba(167,139,250,0.5)', fill: 'rgba(167,139,250,0.2)', animationDelay: `${i * 0.35}s` } as React.CSSProperties} />
+                    style={{ ...style, color: 'rgba(56,189,248,0.55)', fill: 'rgba(56,189,248,0.2)', animationDelay: `${i * 0.35}s` } as React.CSSProperties} />
                 ))}
               </div>
 
               {/* Content */}
               <div className="flex flex-col gap-3.5 p-5 relative z-10 flex-1">
                 <div className="flex items-center gap-1.5 self-start px-2.5 py-1 rounded-full border"
-                  style={{ background: 'rgba(167,139,250,0.1)', borderColor: 'rgba(167,139,250,0.3)', boxShadow: '0 0 14px rgba(167,139,250,0.08)' }}>
-                  <BookOpen size={10} style={{ color: '#a78bfa' }} />
-                  <span className="font-mono text-[9px] font-bold uppercase tracking-widest" style={{ color: '#a78bfa' }}>Verified Achievement</span>
+                  style={{ background: 'rgba(56,189,248,0.1)', borderColor: 'rgba(56,189,248,0.3)', boxShadow: '0 0 14px rgba(56,189,248,0.1)' }}>
+                  <BookOpen size={10} style={{ color: '#38bdf8' }} />
+                  <span className="font-mono text-[9px] font-bold uppercase tracking-widest" style={{ color: '#38bdf8' }}>Verified Achievement</span>
                 </div>
 
                 <div className="flex flex-col">
@@ -192,12 +193,12 @@ export const Achievements: React.FC = () => {
                     viewport={{ once: true }}
                     transition={{ duration: 1, delay: 0.3 }}
                     className="font-sans font-black leading-none glow-number"
-                    style={{ fontSize: 'clamp(2.8rem, 7vw, 4rem)', color: '#a78bfa' }}
+                    style={{ fontSize: 'clamp(2.8rem, 7vw, 4rem)', color: '#38bdf8' }}
                   >
                     75
                   </motion.span>
                   <span className="font-mono text-[10px] text-muted tracking-widest uppercase mt-0.5 pl-2"
-                    style={{ borderLeft: '2px solid rgba(167,139,250,0.4)' }}>
+                    style={{ borderLeft: '2px solid rgba(56,189,248,0.4)' }}>
                     Curated Study Plan Completed
                   </span>
                 </div>
@@ -205,7 +206,7 @@ export const Achievements: React.FC = () => {
                 <div>
                   <h3
                     className="font-sans font-black text-base text-white mb-1 transition-colors duration-300"
-                    onMouseEnter={e => (e.currentTarget.style.color = '#a78bfa')}
+                    onMouseEnter={e => (e.currentTarget.style.color = '#38bdf8')}
                     onMouseLeave={e => (e.currentTarget.style.color = '')}
                   >
                     LeetCode 75 — Study Plan
@@ -219,7 +220,7 @@ export const Achievements: React.FC = () => {
                   {lc75Stats.map(([val, label], i) => (
                     <motion.div key={label} initial={{ opacity: 0, y: 8 }} whileInView={{ opacity: 1, y: 0 }}
                       viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.4 + i * 0.08 }} className="flex flex-col">
-                      <span className="font-sans font-black text-sm glow-number" style={{ color: '#a78bfa' }}>{val}</span>
+                      <span className="font-sans font-black text-sm glow-number" style={{ color: '#38bdf8' }}>{val}</span>
                       <span className="font-mono text-[8px] text-muted uppercase tracking-widest">{label}</span>
                     </motion.div>
                   ))}
@@ -230,7 +231,7 @@ export const Achievements: React.FC = () => {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-1.5 self-start btn-glass-hybrid px-4 py-2 rounded-lg font-bold text-xs mt-auto"
-                  style={{ background: 'linear-gradient(135deg, #7c3aed, #a78bfa)', color: '#fff', border: '1px solid rgba(167,139,250,0.5)', boxShadow: '0 0 20px rgba(124,58,237,0.35)' }}
+                  style={{ background: 'linear-gradient(135deg, #0369a1, #38bdf8)', color: '#fff', border: '1px solid rgba(56,189,248,0.5)', boxShadow: '0 0 20px rgba(14,165,233,0.35)' }}
                 >
                   <Trophy size={12} className="relative z-10" />
                   <span className="relative z-10">View Study Plan</span>
