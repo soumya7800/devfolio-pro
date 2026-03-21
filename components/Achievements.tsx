@@ -227,14 +227,14 @@ export const Achievements: React.FC = () => {
                 </div>
 
                 <MagneticButton
-                  href="https://leetcode.com/studyplan/leetcode-75/"
+                  href="https://leetcode.com/medal/?showImg=0&id=9830369&isLevel=false"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-1.5 self-start btn-glass-hybrid px-4 py-2 rounded-lg font-bold text-xs mt-auto"
                   style={{ background: 'linear-gradient(135deg, #0369a1, #38bdf8)', color: '#fff', border: '1px solid rgba(56,189,248,0.5)', boxShadow: '0 0 20px rgba(14,165,233,0.35)' }}
                 >
                   <Trophy size={12} className="relative z-10" />
-                  <span className="relative z-10">View Study Plan</span>
+                  <span className="relative z-10">View Record</span>
                   <ArrowUpRight size={11} className="relative z-10" />
                 </MagneticButton>
               </div>
