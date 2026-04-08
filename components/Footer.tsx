@@ -4,7 +4,7 @@ import { Github, Linkedin, Code2, Mail, ArrowUp, Zap, MapPin, Heart } from 'luci
 
 const SOCIAL = [
   { icon: Github,   label: 'GitHub',   href: 'https://github.com/soumya7800',                color: '#fff' },
-  { icon: Linkedin, label: 'LinkedIn', href: 'https://linkedin.com/in/soumyaranjanpadhi',    color: '#4A9FFF' },
+  { icon: Linkedin, label: 'LinkedIn', href: 'https://www.linkedin.com/in/soumya-ranjan-padhi-a8740b296/',    color: '#4A9FFF' },
   { icon: Code2,    label: 'LeetCode', href: 'https://leetcode.com/soumyaranjanpadhi',       color: '#FFB547' },
   { icon: Mail,     label: 'Email',    href: 'mailto:soumyarnpadhi1@gmail.com',              color: '#FF5A7E' },
 ];
@@ -79,8 +79,8 @@ export const Footer: React.FC = () => {
 
         {/* Bottom row */}
         <div className="w-full flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="font-mono text-[11px] text-muted tracking-widest uppercase">
-            OxygenOS 15 — Aquamorphic 2.0
+          <p className="font-sans text-sm text-secondary flex items-center gap-1.5">
+            Let's <span className="text-white font-bold">Team Up</span>
           </p>
           <p className="font-sans text-sm text-secondary flex items-center gap-1.5">
             © {new Date().getFullYear()}
